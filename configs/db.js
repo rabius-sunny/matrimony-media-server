@@ -1,7 +1,7 @@
-import { connect } from 'mongoose'
-require('dotenv').config()
+import mongoose from 'mongoose'
+const { connect } = mongoose
 
-export default connection = async () => {
+const connection = async () => {
   try {
     const response = await connect(process.env.URL, {
       useUnifiedTopology: true,
@@ -12,3 +12,5 @@ export default connection = async () => {
     console.log(error)
   }
 }
+
+export default connection

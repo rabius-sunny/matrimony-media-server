@@ -1,8 +1,10 @@
 import { Router } from 'express'
+import { createBio } from '../controllers/post.js'
+import auth from '../middlewares/auth.js'
 const router = Router()
 
 router.get('/home/:page')
-router.post('/create-biodata')
+router.post('/create-biodata', auth, createBio)
 router.post('/update-biodata')
 router.get('/delete-biodata/:id')
 

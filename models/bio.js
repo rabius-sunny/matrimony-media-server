@@ -6,6 +6,16 @@ const bioSchema = new Schema(
     name: {
       type: String
     },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'user'
+    },
+    bookmarks: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'user'
+      }
+    ],
     type: {
       type: String
     },

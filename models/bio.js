@@ -97,13 +97,13 @@ const bioSchema = new Schema(
     secondary_details: {
       type: String
     },
-    heigher: {
+    higher: {
       type: String
     },
     higher_year: {
       type: String
     },
-    heigher_details: {
+    higher_details: {
       type: String
     },
     diploma_details: {

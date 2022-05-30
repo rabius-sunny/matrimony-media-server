@@ -211,6 +211,9 @@ const bioSchema = new Schema(
     guardians_permission: {
       type: String
     },
+    family_planning: {
+      type: String
+    },
     managing_hijab: {
       type: String
     },
@@ -263,9 +266,6 @@ const bioSchema = new Schema(
       type: String
     },
     ex_features: {
-      type: String
-    },
-    ex_family_condition: {
       type: String
     },
     family_about_bio: {

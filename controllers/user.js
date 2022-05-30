@@ -12,16 +12,18 @@ export const signup = async (req, res) => {
   try {
     const onlynumber = await userModel.findOne({ phone })
     const onlyusername = await userModel.findOne({ username })
-    const phoneandnumber = await userModel.findOne({ username, phone })
+    const phone_user = await userModel.findOne({ username, phone })
 
     // Sign in
-    if (phoneandnumber) {
+    if (phone_user) {
       const token = getToken({
-        username: phoneandnumber.username,
-        phone: phoneandnumber.phone,
-        id: phoneandnumber._id
+        username: phone_user.username,
+        phone: phone_user.phone,
+        id: phone_user._id
       })
-      res.status(200).json({ message: 'Sign in successfully', token })
+      res
+        .status(200)
+        .json({ message: 'Sign in successfully', token, id: phone_user._id })
     } else if (onlynumber) {
       res.status(404).json({
         message: `This * ${username} * is a wrong username! The number ${phone} already exists.`
@@ -39,7 +41,9 @@ export const signup = async (req, res) => {
         id: response._id
       })
 
-      res.status(200).json({ message: 'User created successfully', token })
+      res
+        .status(200)
+        .json({ message: 'User created successfully', token, id: response._id })
     }
   } catch (error) {
     res.status(500).json({ error })

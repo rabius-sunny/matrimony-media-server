@@ -1,19 +1,23 @@
 import { Router } from 'express'
-import { createBio } from '../controllers/post.js'
+import { createBio, getBioById } from '../controllers/post.js'
 import auth from '../middlewares/auth.js'
 const router = Router()
 
+// Biodata CRUD operations
 router.get('/home/:page')
-router.post('/create-biodata', auth, createBio)
+router.get('/bio/:id', getBioById)
+router.post('/createorupdate-biodata', auth, createBio)
 router.post('/update-biodata')
-router.get('/delete-biodata/:id')
+router.post('/delete-biodata')
 
+// Biodata feturing options
 router.get('/featured/')
 router.get('/post-featured/:id')
 router.get('/delete-featured/:id')
 
-router.get('/post-favorites/:id/:bioid')
-router.get('/delete-favorites/:id/:bioid')
-router.get('/favorites/:id/:page')
+// Biodata bookmarking options
+router.get('/post-favorites/:bioid')
+router.get('/delete-favorites/:bioid')
+router.get('/favorites/:page')
 
 export default router

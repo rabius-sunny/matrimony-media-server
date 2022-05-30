@@ -20,6 +20,16 @@ export const createBio = async (req, res) => {
       res.status(200).json({ message: 'Bio created successfully' })
     }
   } catch (error) {
-    res.status(500).json({ error })
+    res.status(500).json({ error, message: error.message })
+  }
+}
+
+export const getBioById = async (req, res) => {
+  const user = req.params.id
+  try {
+    const response = await bio.findOne({ user })
+    res.status(200).json({ response })
+  } catch (error) {
+    res.status(404).json({ error, message: error.message })
   }
 }

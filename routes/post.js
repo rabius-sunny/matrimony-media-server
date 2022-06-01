@@ -1,10 +1,10 @@
 import { Router } from 'express'
-import { createBio, getBioById } from '../controllers/post.js'
+import { createBio, getBios, getBioById } from '../controllers/post.js'
 import auth from '../middlewares/auth.js'
 const router = Router()
 
 // Biodata CRUD operations
-router.get('/home/:page')
+router.get('/home/:type/:jilla', getBios)
 router.get('/bio/:id', getBioById)
 router.post('/createorupdate-biodata', auth, createBio)
 router.post('/update-biodata')

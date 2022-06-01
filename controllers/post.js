@@ -33,3 +33,30 @@ export const getBioById = async (req, res) => {
     res.status(404).json({ error, message: error.message })
   }
 }
+
+export const getBios = async (req, res) => {
+  const { type, jilla } = req.params
+  try {
+    if (type !== 'all' && jilla === 'all') {
+      const response = await bio
+        .findOne({ type })
+        .populate('user', 'username -_id')
+      res.status(200).json({ response })
+    } else if (jilla !== 'all' && type === 'all') {
+      const response = await bio
+        .findOne({ permanent_jilla: jilla })
+        .populate('user', 'username -_id')
+      res.status(200).json({ response })
+    } else if (type === 'all' && jilla === 'all') {
+      const response = await bio.find().populate('user', 'username -_id')
+      res.status(200).json({ response })
+    } else {
+      const response = await bio
+        .findOne({ type, permanent_jilla: jilla })
+        .populate('user', 'username -_id')
+      res.status(200).json({ response })
+    }
+  } catch (error) {
+    res.status(404).json({ error, message: error.message })
+  }
+}

@@ -34,6 +34,17 @@ export const getBioById = async (req, res) => {
   }
 }
 
+export const getBioByusername = async (req, res) => {
+  const username = req.params.username
+  try {
+    const user = await userModel.findOne({ username })
+    const response = await bio.findById(user.bio)
+    res.status(200).json({ response })
+  } catch (error) {
+    res.status(404).json({ error, message: error.message })
+  }
+}
+
 export const getBios = async (req, res) => {
   const { type, jilla } = req.params
   try {

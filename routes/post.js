@@ -3,7 +3,11 @@ import {
   createBio,
   getBios,
   getBioById,
-  getBioByusername
+  getBioByusername,
+  addToFavorite,
+  getFavorites,
+  checkFavorite,
+  removeFavorite
 } from '../controllers/post.js'
 import auth from '../middlewares/auth.js'
 const router = Router()
@@ -22,8 +26,9 @@ router.get('/post-featured/:id')
 router.get('/delete-featured/:id')
 
 // Biodata bookmarking options
-router.get('/post-favorites/:bioid')
-router.get('/delete-favorites/:bioid')
-router.get('/favorites/:page')
+router.get('/favorites', auth, getFavorites)
+router.get('/post-favorites/:bioid', auth, addToFavorite)
+router.get('/is-favorite/:bioid', auth, checkFavorite)
+router.delete('/delete-favorites/:bioid', auth, removeFavorite)
 
 export default router

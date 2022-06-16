@@ -53,13 +53,15 @@ export const signup = async (req, res) => {
 export const getUser = async (req, res) => {
   const _id = req.id
   try {
-    const response = await userModel.findById({ _id })
-    // .populate('bio', 'name -_id')
+    const response = await userModel
+      .findById({ _id })
+      .populate('bookmarks', 'type birth condition profession')
     return res.status(200).json({ user: response })
   } catch (error) {
     return res.status(404).json({ error })
   }
 }
+
 export const getType = async (req, res) => {
   const user = req.id
   try {

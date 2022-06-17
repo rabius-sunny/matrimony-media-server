@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 import connection from './configs/db.js'
 import PostRouter from './routes/post.js'
 import userRouter from './routes/user.js'
+import adminRoute from './routes/admin.js'
 
 const PORT = process.env.PORT || 5000
 
@@ -21,5 +22,6 @@ connection()
 // Routes
 app.use('/', PostRouter)
 app.use('/', userRouter)
+app.use('/admin', adminRoute)
 
 app.listen(PORT, () => console.log(`server is running on port= ${PORT}`))

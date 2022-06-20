@@ -45,10 +45,74 @@ export const getAllBio = async (req, res) => {
         date: bio.createdAt,
         type: bio.type,
         user: bio.user,
-        id: bio._id
+        id: bio._id,
+        published: bio.published
       })
     )
     res.status(200).json({ message: 'ok', bios })
+  } catch (error) {
+    res.status(500).json({ error, message: error.message })
+  }
+}
+
+export const getRequestedBio = async (req, res) => {
+  let bios = []
+  try {
+    const response = await bioModel.find({ published: false })
+    if (response) {
+      response.map(bio =>
+        bios.push({
+          name: bio.name,
+          condition: bio.condition,
+          date: bio.createdAt,
+          type: bio.type,
+          user: bio.user,
+          id: bio._id,
+          published: bio.published
+        })
+      )
+    }
+    res.status(200).json({ message: 'ok', bios })
+  } catch (error) {
+    res.status(500).json({ error, message: error.message })
+  }
+}
+
+export const getBioById = async (req, res) => {
+  try {
+    const response = await bioModel.findById(req.params.id)
+    res.status(200).json({ response })
+  } catch (error) {
+    res.status(404).json({ error, message: error.message })
+  }
+}
+
+export const publishBio = async (req, res) => {
+  try {
+    const response = await bioModel.findByIdAndUpdate(req.params.id, {
+      published: true
+    })
+    res.status(200).json({ message: 'ok' })
+  } catch (error) {
+    res.status(500).json({ error, message: error.message })
+  }
+}
+
+export const hideBio = async (req, res) => {
+  try {
+    const response = await bioModel.findByIdAndUpdate(req.params.id, {
+      published: false
+    })
+    res.status(200).json({ message: 'ok' })
+  } catch (error) {
+    res.status(500).json({ error, message: error.message })
+  }
+}
+
+export const deleteBio = async (req, res) => {
+  try {
+    const response = await bioModel.findByIdAndDelete(req.params.id)
+    res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }

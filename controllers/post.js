@@ -8,7 +8,7 @@ export const createBio = async (req, res) => {
     const response = await bio.findOne({ user })
     if (response) {
       const update = await bio.findByIdAndUpdate(response._id, req.body)
-      res.status(200).json({ message: 'Bio updated successfully' })
+      res.status(200).json({ message: 'ok' })
     } else {
       const createNew = await bio.create({
         ...req.body,
@@ -18,7 +18,7 @@ export const createBio = async (req, res) => {
         bio: createNew._id
       })
 
-      res.status(200).json({ message: 'Bio created successfully' })
+      res.status(200).json({ message: 'ok' })
     }
   } catch (error) {
     res.status(500).json({ error, message: error.message })
@@ -50,25 +50,41 @@ export const getBioByusername = async (req, res) => {
 
 export const getBios = async (req, res) => {
   const { type, jilla } = req.params
+  let published = []
   try {
     if (type !== 'all' && jilla === 'all') {
       const response = await bio
-        .findOne({ type })
+        .find({ type })
         .populate('user', 'username -_id')
-      res.status(200).json({ response: response ? [response] : null })
+
+      if (response.length > 0) {
+        published = response.filter(item => item.published === true)
+      }
+      res.status(200).json({ response: response ? published : null })
     } else if (jilla !== 'all' && type === 'all') {
       const response = await bio
-        .findOne({ permanent_jilla: jilla })
+        .find({ permanent_jilla: jilla })
         .populate('user', 'username -_id')
-      res.status(200).json({ response: response ? [response] : null })
+
+      if (response.length > 0) {
+        published = response.filter(item => item.published === true)
+      }
+      res.status(200).json({ response: response ? published : null })
     } else if (type === 'all' && jilla === 'all') {
       const response = await bio.find().populate('user', 'username -_id')
-      res.status(200).json({ response })
+      if (response.length > 0) {
+        published = response.filter(item => item.published === true)
+      }
+      res.status(200).json({ response: response ? published : null })
     } else {
       const response = await bio
-        .findOne({ type, permanent_jilla: jilla })
+        .find({ type, permanent_jilla: jilla })
         .populate('user', 'username -_id')
-      res.status(200).json({ response: response ? [response] : null })
+
+      if (response.length > 0) {
+        published = response.filter(item => item.published === true)
+      }
+      res.status(200).json({ response: response ? published : null })
     }
   } catch (error) {
     res.status(404).json({ error, message: error.message })

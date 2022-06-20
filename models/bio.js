@@ -16,6 +16,16 @@ const bioSchema = new Schema(
         ref: 'user'
       }
     ],
+    published: {
+      type: Boolean,
+      default: false,
+      required: false
+    },
+    requested: {
+      type: Boolean,
+      default: false,
+      required: false
+    },
     type: {
       type: String
     },

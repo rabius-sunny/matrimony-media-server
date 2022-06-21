@@ -1,10 +1,12 @@
 import { Router } from 'express'
 import {
   deleteBio,
+  deleteFeature,
   getAllBio,
   getBioById,
   getRequestedBio,
   hideBio,
+  makeFeature,
   publishBio,
   signinadmin,
   signupadmin
@@ -25,5 +27,9 @@ router.get('/edit-requests', adminAuth, getRequestedBio)
 router.get('/publish-bio/:id', adminAuth, publishBio)
 router.get('/hide-bio/:id', adminAuth, hideBio)
 router.delete('/delete-bio/:id', adminAuth, deleteBio)
+
+// bio featuring options
+router.get('/make-feature/:id', adminAuth, makeFeature)
+router.get('/delete-feature/:id', adminAuth, deleteFeature)
 
 export default router

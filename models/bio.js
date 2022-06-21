@@ -26,6 +26,11 @@ const bioSchema = new Schema(
       default: false,
       required: false
     },
+    featured: {
+      type: Boolean,
+      default: false,
+      required: false
+    },
     type: {
       type: String
     },

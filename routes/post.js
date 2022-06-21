@@ -7,7 +7,8 @@ import {
   addToFavorite,
   getFavorites,
   checkFavorite,
-  removeFavorite
+  removeFavorite,
+  getFeatureds
 } from '../controllers/post.js'
 import auth from '../middlewares/auth.js'
 const router = Router()
@@ -15,15 +16,13 @@ const router = Router()
 // Biodata CRUD operations
 router.get('/home/:type/:jilla', getBios)
 router.get('/bio/:id', getBioById)
-router.get('/bio-username/:username', getBioByusername)
+router.get('/bio-user/:user', getBioByusername)
 router.post('/createorupdate-biodata', auth, createBio)
 router.post('/update-biodata')
 router.post('/delete-biodata')
 
 // Biodata feturing options
-router.get('/featured/')
-router.get('/post-featured/:id')
-router.get('/delete-featured/:id')
+router.get('/get-featureds', getFeatureds)
 
 // Biodata bookmarking options
 router.get('/favorites', auth, getFavorites)

@@ -1,11 +1,13 @@
 import jwt from 'jsonwebtoken'
 import adminModel from '../models/admin.js'
+import bio from '../models/bio.js'
 const { sign } = jwt
 import bioModel from '../models/bio.js'
 
 // Get a token from jsonwebtoken
 const getToken = user => sign(user, process.env.ADMIN_SECRET_KEY)
 
+// auth operations
 export const signinadmin = async (req, res) => {
   const { email, password, salt } = req.body
 
@@ -34,6 +36,7 @@ export const signupadmin = async (req, res) => {
   }
 }
 
+// bio operations
 export const getAllBio = async (req, res) => {
   let bios = []
   try {
@@ -46,7 +49,9 @@ export const getAllBio = async (req, res) => {
         type: bio.type,
         user: bio.user,
         id: bio._id,
-        published: bio.published
+        published: bio.published,
+        requested: bio.requested,
+        featured: bio.featured
       })
     )
     res.status(200).json({ message: 'ok', bios })
@@ -112,6 +117,29 @@ export const hideBio = async (req, res) => {
 export const deleteBio = async (req, res) => {
   try {
     const response = await bioModel.findByIdAndDelete(req.params.id)
+    res.status(200).json({ message: 'ok' })
+  } catch (error) {
+    res.status(500).json({ error, message: error.message })
+  }
+}
+
+// featuring operation
+export const makeFeature = async (req, res) => {
+  try {
+    const response = await bio.findByIdAndUpdate(req.params.id, {
+      featured: true
+    })
+    res.status(200).json({ message: 'ok' })
+  } catch (error) {
+    res.status(500).json({ error, message: error.message })
+  }
+}
+
+export const deleteFeature = async (req, res) => {
+  try {
+    const response = await bio.findByIdAndUpdate(req.params.id, {
+      featured: false
+    })
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })

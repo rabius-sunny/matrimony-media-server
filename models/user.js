@@ -20,6 +20,12 @@ const userSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: 'bio'
       }
+    ],
+    fields: [
+      {
+        type: Object,
+        required: false
+      }
     ]
   },
   { timestamps: true }

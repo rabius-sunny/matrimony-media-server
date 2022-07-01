@@ -7,9 +7,11 @@ export const createBio = async (req, res) => {
   try {
     const response = await bio.findOne({ user })
     if (response) {
+      // Update the bio
       const update = await bio.findByIdAndUpdate(response._id, req.body)
       res.status(200).json({ message: 'ok' })
     } else {
+      // Create a new bio
       const createNew = await bio.create({
         ...req.body,
         user
@@ -107,6 +109,116 @@ export const getFeatureds = async (req, res) => {
     res.status(200).json({ bios: response ?? null })
   } catch (error) {
     res.status(404).json({ message: error.message, error })
+  }
+}
+
+function getMethod(num) {
+  let _method
+  switch (num) {
+    case '0':
+      _method = {
+        $set: {
+          'fields.0.complete': true
+        }
+      }
+      break
+    case '1':
+      _method = {
+        $set: {
+          'fields.1.complete': true
+        }
+      }
+      break
+    case '2':
+      _method = {
+        $set: {
+          'fields.2.complete': true
+        }
+      }
+      break
+    case '3':
+      _method = {
+        $set: {
+          'fields.3.complete': true
+        }
+      }
+      break
+    case '4':
+      _method = {
+        $set: {
+          'fields.4.complete': true
+        }
+      }
+      break
+    case '5':
+      _method = {
+        $set: {
+          'fields.5.complete': true
+        }
+      }
+      break
+    case '6':
+      _method = {
+        $set: {
+          'fields.6.complete': true
+        }
+      }
+      break
+    case '7':
+      _method = {
+        $set: {
+          'fields.7.complete': true
+        }
+      }
+      break
+    case '8':
+      _method = {
+        $set: {
+          'fields.8.complete': true
+        }
+      }
+      break
+    case '9':
+      _method = {
+        $set: {
+          'fields.9.complete': true
+        }
+      }
+      break
+    case '10':
+      _method = {
+        $set: {
+          'fields.10.complete': true
+        }
+      }
+      break
+
+    default:
+      return _method
+  }
+  return _method
+}
+
+export const setField = async (req, res) => {
+  const id = req.id
+  const num = req.params.num
+  let method = getMethod(num)
+  try {
+    const response = await userModel.findByIdAndUpdate(id, method)
+    res.status(200).json({ message: 'ok' })
+  } catch (error) {
+    res.status(500).json({ error, message: error.message })
+  }
+}
+
+export const checkField = async (req, res) => {
+  const id = req.id
+  try {
+    const fieldResponse = await userModel.findById(id)
+    const fields = fieldResponse.fields.filter(item => item.complete === false)
+    res.status(200).json({ fields })
+  } catch (error) {
+    res.status(500).json({ error, message: error.message })
   }
 }
 

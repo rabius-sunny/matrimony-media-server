@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken'
 const { sign } = jwt
 import userModel from '../models/user.js'
 import bioModel from '../models/bio.js'
+import fields from '../assets/fields.js'
 
 // Get a token from jsonwebtoken
 const getToken = user => sign(user, process.env.SECRET_KEY)
@@ -21,9 +22,12 @@ export const signup = async (req, res) => {
         phone: phone_user.phone,
         id: phone_user._id
       })
-      res
-        .status(200)
-        .json({ message: 'Sign in successfully', token, id: phone_user._id })
+      res.status(200).json({
+        message: 'Sign in successfully',
+        token,
+        id: phone_user._id,
+        username: phone_user.username
+      })
     } else if (onlynumber) {
       res.status(404).json({
         message: `This * ${username} * is a wrong username! The number ${phone} already exists.`
@@ -39,6 +43,11 @@ export const signup = async (req, res) => {
         username: response.username,
         phone: response.phone,
         id: response._id
+      })
+      const makeFields = await userModel.findByIdAndUpdate(response._id, {
+        $set: {
+          fields
+        }
       })
 
       res

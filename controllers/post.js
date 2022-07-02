@@ -58,6 +58,16 @@ export const getBioByusername = async (req, res) => {
   }
 }
 
+export const getBioByToken = async (req, res) => {
+  const user = req.id
+  try {
+    const response = await bio.findOne({ user })
+    res.status(200).json({ bio: response })
+  } catch (error) {
+    res.status(404).json({ error, message: error.message })
+  }
+}
+
 export const getBios = async (req, res) => {
   const { type, jilla } = req.params
   let published = []
@@ -215,7 +225,7 @@ export const checkField = async (req, res) => {
   const id = req.id
   try {
     const fieldResponse = await userModel.findById(id)
-    const fields = fieldResponse.fields.filter(item => item.complete === false)
+    const fields = fieldResponse.fields.filter(item => item.complete == false)
     res.status(200).json({ fields })
   } catch (error) {
     res.status(500).json({ error, message: error.message })

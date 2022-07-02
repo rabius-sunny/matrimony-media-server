@@ -10,7 +10,8 @@ import {
   removeFavorite,
   getFeatureds,
   setField,
-  checkField
+  checkField,
+  getBioByToken
 } from '../controllers/post.js'
 import auth from '../middlewares/auth.js'
 const router = Router()
@@ -24,6 +25,7 @@ router.post('/update-biodata')
 router.post('/delete-biodata')
 router.get('/set-field/:num', auth, setField)
 router.get('/check-field', auth, checkField)
+router.get('/getbio-by-token', auth, getBioByToken)
 
 // Biodata feturing options
 router.get('/get-featureds', getFeatureds)

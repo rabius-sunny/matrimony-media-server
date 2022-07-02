@@ -292,7 +292,7 @@ const bioSchema = new Schema(
     liability: {
       type: String
     },
-    guandian_number: {
+    guardian_number: {
       type: String
     },
     number_relation: {

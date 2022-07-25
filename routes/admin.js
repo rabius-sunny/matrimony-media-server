@@ -4,6 +4,8 @@ import {
   deleteFeature,
   getAllBio,
   getBioById,
+  getDeleteHideReq,
+  getInfoRequests,
   getRequestedBio,
   hideBio,
   makeFeature,
@@ -24,12 +26,17 @@ router.get('/all-bio', adminAuth, getAllBio)
 router.get('/bio/:id', adminAuth, getBioById)
 router.get('/edit-requests', adminAuth, getRequestedBio)
 
-router.get('/publish-bio/:id', adminAuth, publishBio)
+// delete or hide
+router.get('/get-delete-hide', adminAuth, getDeleteHideReq)
 router.get('/hide-bio/:id', adminAuth, hideBio)
 router.delete('/delete-bio/:id', adminAuth, deleteBio)
+router.get('/publish-bio/:id', adminAuth, publishBio)
 
 // bio featuring options
 router.get('/make-feature/:id', adminAuth, makeFeature)
 router.get('/delete-feature/:id', adminAuth, deleteFeature)
+
+// info requests
+router.get('/get-info-requests', adminAuth, getInfoRequests)
 
 export default router

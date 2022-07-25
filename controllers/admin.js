@@ -3,6 +3,8 @@ import adminModel from '../models/admin.js'
 import bio from '../models/bio.js'
 const { sign } = jwt
 import bioModel from '../models/bio.js'
+import deletehide from '../models/deletehide.js'
+import inforequest from '../models/inforequest.js'
 
 // Get a token from jsonwebtoken
 const getToken = user => sign(user, process.env.ADMIN_SECRET_KEY)
@@ -54,7 +56,7 @@ export const getAllBio = async (req, res) => {
         featured: bio.featured
       })
     )
-    res.status(200).json({ message: 'ok', bios })
+    return res.status(200).json({ message: 'ok', bios })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }
@@ -77,7 +79,7 @@ export const getRequestedBio = async (req, res) => {
         })
       )
     }
-    res.status(200).json({ message: 'ok', bios })
+    return res.status(200).json({ message: 'ok', bios })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }
@@ -100,6 +102,16 @@ export const publishBio = async (req, res) => {
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
+  }
+}
+
+// delete or hide
+export const getDeleteHideReq = async (req, res) => {
+  try {
+    const response = await deletehide.find().populate('user', 'username -_id')
+    return res.status(200).json({ requests: response })
+  } catch (error) {
+    return res.status(404).json({ message: 'Not found' })
   }
 }
 
@@ -143,5 +155,15 @@ export const deleteFeature = async (req, res) => {
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
+  }
+}
+
+// info requests
+export const getInfoRequests = async (req, res) => {
+  try {
+    const response = await inforequest.find()
+    res.status(200).json({ message: 'ok', data: response })
+  } catch (error) {
+    res.status(404).json({ message: 'Not found' })
   }
 }

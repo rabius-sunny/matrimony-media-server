@@ -42,10 +42,13 @@ export const signupadmin = async (req, res) => {
 export const getAllBio = async (req, res) => {
   let bios = []
   try {
-    const response = await bioModel.find()
+    const response = await bioModel.find().populate('user')
+    console.log('data', response)
     response.map(bio =>
       bios.push({
         name: bio.name,
+        username: user.username,
+        number: user.phone,
         condition: bio.condition,
         date: bio.createdAt,
         type: bio.type,
@@ -58,7 +61,7 @@ export const getAllBio = async (req, res) => {
     )
     return res.status(200).json({ message: 'ok', bios })
   } catch (error) {
-    res.status(500).json({ error, message: error.message })
+    return res.status(500).json({ error, message: error.message })
   }
 }
 

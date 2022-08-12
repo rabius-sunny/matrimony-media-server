@@ -40,26 +40,25 @@ export const signupadmin = async (req, res) => {
 
 // bio operations
 export const getAllBio = async (req, res) => {
-  let bios = []
   try {
     const response = await bioModel.find().populate('user')
-    console.log('data', response)
-    response.map(bio =>
-      bios.push({
-        name: bio.name,
-        username: user.username,
-        number: user.phone,
-        condition: bio.condition,
-        date: bio.createdAt,
-        type: bio.type,
-        user: bio.user,
-        id: bio._id,
-        published: bio.published,
-        requested: bio.requested,
-        featured: bio.featured
-      })
-    )
-    return res.status(200).json({ message: 'ok', bios })
+    // let bios = []
+    // response.map(bio =>
+    //   bios.push({
+    //     name: bio.name,
+    //     username: user.username,
+    //     number: user.phone,
+    //     condition: bio.condition,
+    //     date: bio.createdAt,
+    //     type: bio.type,
+    //     user: bio.user,
+    //     id: bio._id,
+    //     published: bio.published,
+    //     requested: bio.requested,
+    //     featured: bio.featured
+    //   })
+    // )
+    return res.status(200).json({ message: 'ok', bios: response })
   } catch (error) {
     return res.status(500).json({ error, message: error.message })
   }

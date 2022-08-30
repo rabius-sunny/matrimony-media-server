@@ -3,7 +3,7 @@ const { model, Schema } = mongoose
 
 const userSchema = new Schema(
   {
-    username: {
+    uId: {
       type: String,
       required: true
     },

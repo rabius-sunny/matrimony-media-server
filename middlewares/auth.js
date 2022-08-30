@@ -9,9 +9,9 @@ const auth = (req, res, next) => {
       if (err) {
         return res.status(403)
       } else {
-        req.username = user.username
         req.phone = user.phone
         req.id = user.id
+        req.uId = user.uId
       }
     })
     next()

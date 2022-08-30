@@ -181,6 +181,9 @@ const bioSchema = new Schema(
     can_tilawat: {
       type: String
     },
+    madhab: {
+      type: String
+    },
     mazhab: {
       type: String
     },

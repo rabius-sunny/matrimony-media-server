@@ -2,8 +2,8 @@ import { Router } from 'express'
 import {
   createBio,
   getBios,
-  getBioById,
-  getBioByusername,
+  getBioByUserId,
+  getBioByUID,
   addToFavorite,
   getFavorites,
   checkFavorite,
@@ -13,20 +13,16 @@ import {
   checkField,
   getBioByToken,
   makeRequest,
-  getRequest,
-  getUsername,
-  getUsernameById
+  getUIDbyId
 } from '../controllers/post.js'
 import auth from '../middlewares/auth.js'
-import adminAuth from '../middlewares/adminAuth.js'
 const router = Router()
 
 // Biodata CRUD operations
 router.get('/home/:type/:jilla', getBios)
-router.get('/bio/:id', getBioById)
-router.get('/bio-user/:user', getBioByusername)
-router.get('/getusername/:id', getUsername)
-router.get('/getusername-byid/:id', getUsernameById)
+router.get('/bio/:id', getBioByUserId)
+router.get('/bio-id/:uId', getBioByUID)
+router.get('/bio-uId/:id', getUIDbyId)
 router.post('/createorupdate-biodata', auth, createBio)
 router.post('/update-biodata')
 router.post('/delete-biodata')
@@ -45,6 +41,5 @@ router.delete('/delete-favorites/:bioid', auth, removeFavorite)
 
 // Bio info request options
 router.post('/request-info', makeRequest)
-router.post('/get-request', adminAuth, getRequest)
 
 export default router

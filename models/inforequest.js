@@ -30,6 +30,10 @@ const inforequestSchema = new Schema(
     trx: {
       type: String,
       required: true
+    },
+    status: {
+      type: String,
+      required: true
     }
   },
   { timestamps: true }

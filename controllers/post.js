@@ -28,55 +28,32 @@ export const createBio = async (req, res) => {
   }
 }
 
-export const getBioById = async (req, res) => {
+export const getBioByUserId = async (req, res) => {
   const user = req.params.id
   try {
-    const response = await bio.findOne({ user })
+    const response = await bio.findOne({ user }).populate('user', 'uId')
     res.status(200).json({ response })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
   }
 }
 
-export const getBioByusername = async (req, res) => {
-  const _data = req.params.user.split('+')[0]
-  const _type = req.params.user.split('+')[1]
+export const getBioByUID = async (req, res) => {
   try {
-    if (_type === 'username') {
-      const user = await userModel.findOne({ username: _data })
-      const response = await bio
-        .findById(user.bio)
-        .populate('user', 'username -_id')
-      res.status(200).json({ response: response ?? null })
-    } else if (_type === 'id') {
-      const response = await bio
-        .findById(_data)
-        .populate('user', 'username -_id')
-      res.status(200).json({ response: response ?? null })
-    }
+    const user = await userModel.findOne({ uId: req.params.uId })
+    const response = await bio.findOne({ user: user._id })
+    // .populate('user', 'uId -_id')
+    res.status(200).json({ response: response ?? null })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
   }
 }
-
-export const getUsername = async (req, res) => {
-  const id = req.params.id
+export const getUIDbyId = async (req, res) => {
   try {
-    const response = await bio
-      .findOne({ _id: id })
-      .populate('user', 'username -_id')
-    res.status(200).json({ username: response.user.username, done: 'ok' })
+    const user = await userModel.findById(req.params.id)
+    res.status(200).json({ uId: user.uId })
   } catch (error) {
-    res.status(404).json({ error, message: 'Not found' })
-  }
-}
-export const getUsernameById = async (req, res) => {
-  const id = req.params.id
-  try {
-    const response = await userModel.findById(id)
-    res.status(200).json({ username: response.username, done: 'ok' })
-  } catch (error) {
-    res.status(404).json({ error, message: 'Not found' })
+    res.status(404).json({ error, message: error.message })
   }
 }
 
@@ -95,9 +72,7 @@ export const getBios = async (req, res) => {
   let published = []
   try {
     if (type !== 'all' && jilla === 'all') {
-      const response = await bio
-        .find({ type })
-        .populate('user', 'username -_id')
+      const response = await bio.find({ type }).populate('user', 'uId -_id')
 
       if (response.length > 0) {
         published = response.filter(item => item.published === true)
@@ -106,14 +81,14 @@ export const getBios = async (req, res) => {
     } else if (jilla !== 'all' && type === 'all') {
       const response = await bio
         .find({ permanent_jilla: jilla })
-        .populate('user', 'username -_id')
+        .populate('user', 'uId -_id')
 
       if (response.length > 0) {
         published = response.filter(item => item.published === true)
       }
       res.status(200).json({ response: response ? published : null })
     } else if (type === 'all' && jilla === 'all') {
-      const response = await bio.find().populate('user', 'username -_id')
+      const response = await bio.find().populate('user', 'uId -_id')
       if (response.length > 0) {
         published = response.filter(item => item.published === true)
       }
@@ -121,7 +96,7 @@ export const getBios = async (req, res) => {
     } else {
       const response = await bio
         .find({ type, permanent_jilla: jilla })
-        .populate('user', 'username -_id')
+        .populate('user', 'uId -_id')
 
       if (response.length > 0) {
         published = response.filter(item => item.published === true)
@@ -137,13 +112,14 @@ export const getFeatureds = async (req, res) => {
   try {
     const response = await bio
       .find({ featured: true })
-      .populate('user', 'username -_id')
+      .populate('user', 'uId -_id')
     res.status(200).json({ bios: response ?? null })
   } catch (error) {
     res.status(404).json({ message: error.message, error })
   }
 }
 
+// custom methods
 function getMethod(num) {
   let _method
   switch (num) {
@@ -258,11 +234,11 @@ export const checkField = async (req, res) => {
 export const getFavorites = async (req, res) => {
   const id = req.id
   try {
-    const user = await userModel
+    const data = await userModel
       .findById(id)
       .populate('bookmarks', 'type birth condition profession user')
 
-    res.status(200).json({ bios: user.bookmarks })
+    res.status(200).json({ bios: data.bookmarks })
   } catch (error) {
     res.status(404).json({ message: 'No bookmarks' })
   }
@@ -271,6 +247,8 @@ export const getFavorites = async (req, res) => {
 export const addToFavorite = async (req, res) => {
   const { bioid } = req.params
   const _id = req.id
+
+  if (!_id) return res.status(401).json({ message: 'UnAuthorized' })
 
   try {
     const pushToUser = await userModel.updateOne(
@@ -332,14 +310,6 @@ export const makeRequest = async (req, res) => {
   try {
     const response = await inforequest.create(req.body)
     res.status(200).json({ message: 'ok' })
-  } catch (error) {
-    res.status(500).json({ error, message: error.message })
-  }
-}
-export const getRequest = async (req, res) => {
-  try {
-    const response = await inforequest.find()
-    res.status(200).json({ response })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }

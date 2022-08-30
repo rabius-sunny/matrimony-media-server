@@ -17,6 +17,14 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
+"@sendlime/server-sdk@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@sendlime/server-sdk/-/server-sdk-1.2.2.tgz#3b38edc90f44339513ecbbbcb79e88ce2c19bd8e"
+  integrity sha512-2I12GRo4AfJgDtwlSOGX425lBx1h10oEOsPesEMybQsui9jJwFc/WUpNApsP/tc3CvEvQZ6pvpoxtNviTAf/GA==
+  dependencies:
+    axios "^0.24.0"
+    khali "^1.2.1"
+
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
@@ -111,6 +119,13 @@ array-flatten@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/array-flatten/-/array-flatten-1.1.1.tgz#9a5f699051b1e7073328f2a008968b64ea2955d2"
   integrity sha1-ml9pkFGx5wczKPKgCJaLZOopVdI=
+
+axios@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
+  integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
+  dependencies:
+    follow-redirects "^1.14.4"
 
 balanced-match@^1.0.0:
   version "1.0.2"
@@ -558,6 +573,11 @@ finalhandler@~1.1.2:
     statuses "~1.5.0"
     unpipe "~1.0.0"
 
+follow-redirects@^1.14.4:
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.1.tgz#0ca6a452306c9b276e4d3127483e29575e207ad5"
+  integrity sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==
+
 forwarded@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.2.0.tgz#2269936428aad4c15c7ebe9779a84bf0b2a81811"
@@ -921,6 +941,11 @@ keyv@^3.0.0:
   integrity sha512-9ykJ/46SN/9KPM/sichzQ7OvXyGDYKGTaDlKMGCAlg2UK8KRy4jb0d8sFc+0Tt0YYnThq8X2RZgCg74RPxgcVA==
   dependencies:
     json-buffer "3.0.0"
+
+khali@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/khali/-/khali-1.2.1.tgz#40f72da2ade8aab041bf01e44f47533a6fe2ccd6"
+  integrity sha512-kuV/f6Xr00lZHAoS32m8G2joY01adcRbg6tNIQ4JwtXdbJV8KklLugeeWpb1ap55Z+IHxAOzkhPWqttiNuBFGg==
 
 latest-version@^5.1.0:
   version "5.1.0"

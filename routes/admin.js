@@ -1,11 +1,13 @@
 import { Router } from 'express'
 import {
+  acceptRequest,
   deleteBio,
   deleteFeature,
+  deleteRequest,
   getAllBio,
   getBioById,
   getDeleteHideReq,
-  getInfoRequests,
+  getRequest,
   getRequestedBio,
   hideBio,
   makeFeature,
@@ -13,6 +15,7 @@ import {
   signinadmin,
   signupadmin
 } from '../controllers/admin.js'
+
 import adminAuth from '../middlewares/adminAuth.js'
 
 const router = Router()
@@ -37,6 +40,8 @@ router.get('/make-feature/:id', adminAuth, makeFeature)
 router.get('/delete-feature/:id', adminAuth, deleteFeature)
 
 // info requests
-router.get('/get-info-requests', adminAuth, getInfoRequests)
+router.get('/get-requests', adminAuth, getRequest)
+router.post('/accept-request', adminAuth, acceptRequest)
+router.get('/delete-request/:id', adminAuth, deleteRequest)
 
 export default router

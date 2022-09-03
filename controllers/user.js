@@ -40,6 +40,10 @@ export const signup = async (req, res) => {
           fields
         }
       })
+      const createNewBio = await bioModel.create({ user: response._id })
+      const updateUserBio = await userModel.findByIdAndUpdate(response._id, {
+        bio: createNewBio._id
+      })
 
       res.status(200).json({
         message: 'User created successfully',
@@ -52,6 +56,7 @@ export const signup = async (req, res) => {
     res.status(500).json({ error })
   }
 }
+
 // export const signup = async (req, res) => {
 //   const { username, phone } = req.body
 

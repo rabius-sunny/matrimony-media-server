@@ -11,18 +11,19 @@ export const createBio = async (req, res) => {
       // Update the bio
       const update = await bio.findByIdAndUpdate(response._id, req.body)
       res.status(200).json({ message: 'ok' })
-    } else {
-      // Create a new bio
-      const createNew = await bio.create({
-        ...req.body,
-        user
-      })
-      const updateUserBio = await userModel.findByIdAndUpdate(user, {
-        bio: createNew._id
-      })
-
-      res.status(200).json({ message: 'ok' })
     }
+    //  else {
+    // Create a new bio
+    // const createNew = await bio.create({
+    //   ...req.body,
+    //   user
+    // })
+    // const updateUserBio = await userModel.findByIdAndUpdate(user, {
+    //   bio: createNew._id
+    // })
+
+    //   res.status(200).json({ message: 'ok' })
+    // }
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }
@@ -71,6 +72,7 @@ export const getBios = async (req, res) => {
   const { type, jilla } = req.params
   let published = []
   try {
+    // criteria TYPE
     if (type !== 'all' && jilla === 'all') {
       const response = await bio.find({ type }).populate('user', 'uId -_id')
 
@@ -79,6 +81,7 @@ export const getBios = async (req, res) => {
       }
       res.status(200).json({ response: response ? published : null })
     } else if (jilla !== 'all' && type === 'all') {
+      // criteria JILLA
       const response = await bio
         .find({ permanent_jilla: jilla })
         .populate('user', 'uId -_id')
@@ -88,12 +91,14 @@ export const getBios = async (req, res) => {
       }
       res.status(200).json({ response: response ? published : null })
     } else if (type === 'all' && jilla === 'all') {
+      // no criteria
       const response = await bio.find().populate('user', 'uId -_id')
       if (response.length > 0) {
         published = response.filter(item => item.published === true)
       }
       res.status(200).json({ response: response ? published : null })
     } else {
+      // criteria both TYPE & JILLA
       const response = await bio
         .find({ type, permanent_jilla: jilla })
         .populate('user', 'uId -_id')

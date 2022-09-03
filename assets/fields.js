@@ -1,7 +1,7 @@
 const fields = [
   {
     name: 'প্রাথমিক',
-    slug: '/profile/edit/name',
+    slug: '/profile/edit/primary',
     complete: false
   },
   {

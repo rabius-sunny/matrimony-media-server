@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   acceptRequest,
   deleteBio,
+  deleteBioById,
   deleteFeature,
   deleteRequest,
   getAllBio,
@@ -10,6 +11,7 @@ import {
   getRequest,
   getRequestedBio,
   hideBio,
+  hideBioById,
   makeFeature,
   publishBio,
   signinadmin,
@@ -32,7 +34,9 @@ router.get('/edit-requests', adminAuth, getRequestedBio)
 // delete or hide
 router.get('/get-delete-hide', adminAuth, getDeleteHideReq)
 router.get('/hide-bio/:id', adminAuth, hideBio)
+router.get('/hide-bio-id/:id/:reqId', adminAuth, hideBioById)
 router.delete('/delete-bio/:id', adminAuth, deleteBio)
+router.delete('/delete-bio-id/:id/:reqId', adminAuth, deleteBioById)
 router.get('/publish-bio/:id', adminAuth, publishBio)
 
 // bio featuring options
@@ -42,6 +46,6 @@ router.get('/delete-feature/:id', adminAuth, deleteFeature)
 // info requests
 router.get('/get-requests', adminAuth, getRequest)
 router.post('/accept-request', adminAuth, acceptRequest)
-router.get('/delete-request/:id', adminAuth, deleteRequest)
+router.delete('/delete-request/:id', adminAuth, deleteRequest)
 
 export default router

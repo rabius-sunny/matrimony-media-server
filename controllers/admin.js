@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import sendMessage from '../configs/sendMessage.js'
+import userModel from '../models/user.js'
 import adminModel from '../models/admin.js'
 import bio from '../models/bio.js'
 const { sign } = jwt
@@ -109,7 +110,7 @@ export const publishBio = async (req, res) => {
 // delete or hide
 export const getDeleteHideReq = async (req, res) => {
   try {
-    const response = await deletehide.find().populate('user', 'username -_id')
+    const response = await deletehide.find().populate('user', 'uId username')
     return res.status(200).json({ requests: response })
   } catch (error) {
     return res.status(404).json({ message: 'Not found' })
@@ -129,7 +130,34 @@ export const hideBio = async (req, res) => {
 
 export const deleteBio = async (req, res) => {
   try {
-    const response = await bioModel.findByIdAndDelete(req.params.id)
+    const deleteBio = await bioModel.findByIdAndDelete(req.params.id)
+    const deleteUser = await userModel.findOneAndDelete({ bio: req.params.id })
+    res.status(200).json({ message: 'ok' })
+  } catch (error) {
+    res.status(500).json({ error, message: error.message })
+  }
+}
+
+export const hideBioById = async (req, res) => {
+  try {
+    const updating = await bioModel.findOneAndUpdate(
+      { user: req.params.id },
+      {
+        published: false
+      }
+    )
+    const deleteRequest = await deletehide.findByIdAndDelete(req.params.reqId)
+    res.status(200).json({ message: 'ok' })
+  } catch (error) {
+    res.status(500).json({ error, message: error.message })
+  }
+}
+
+export const deleteBioById = async (req, res) => {
+  try {
+    const deleteBio = await bioModel.findOneAndDelete({ user: req.params.id })
+    const deleteUser = await userModel.findByIdAndDelete(req.params.id)
+    const deleteRequest = await deletehide.findByIdAndDelete(req.params.reqId)
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
@@ -178,25 +206,20 @@ export const getRequest = async (req, res) => {
 }
 export const acceptRequest = async (req, res) => {
   const { to, text, id } = req.body
-  let status = false
-  console.log(to)
   try {
     sendMessage.message
       .sendSms({ to, text })
       .then(response => {
         if (response.success) {
-          status = true
+          inforequest.findByIdAndUpdate(id, { status: 'done' })
+          return res.status(200).json({ message: 'ok' })
         } else {
-          status = false
-          console.log(`Message failed with error: ${response.error_code}`)
-          console.log(`Message success: ${response.success}`)
-          console.log(`Message result: ${response.result}`)
+          return res.status(500).json({ message: 'failed' })
         }
       })
       .catch(err => console.log(err))
-    const response = await inforequest.findByIdAndUpdate(id, { status: 'done' })
-    res.status(200).json({ message: status ? 'ok' : 'failed' })
   } catch (error) {
+    console.log('error', error)
     res.status(500).json({ error, message: error.message })
   }
 }

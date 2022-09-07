@@ -3,6 +3,14 @@ const { model, Schema } = mongoose
 
 const inforequestSchema = new Schema(
   {
+    fillrequired: {
+      type: String,
+      required: true
+    },
+    hasfeature: {
+      type: String,
+      required: true
+    },
     name: {
       type: String,
       required: true

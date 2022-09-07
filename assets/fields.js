@@ -5,8 +5,23 @@ const fields = [
     complete: false
   },
   {
+    name: 'ব্যক্তিগত তথ্য',
+    slug: '/profile/edit/personal-info',
+    complete: false
+  },
+  {
+    name: 'বিয়ে সংক্রান্ত তথ্য',
+    slug: '/profile/edit/marriage-related-info',
+    complete: false
+  },
+  {
     name: 'সাধারণ তথ্য',
     slug: '/profile/edit/general-info',
+    complete: false
+  },
+  {
+    name: 'পারিবারিক তথ্য',
+    slug: '/profile/edit/family-info',
     complete: false
   },
   {
@@ -20,21 +35,6 @@ const fields = [
     complete: false
   },
   {
-    name: 'পারিবারিক তথ্য',
-    slug: '/profile/edit/family-info',
-    complete: false
-  },
-  {
-    name: 'ব্যক্তিগত তথ্য',
-    slug: '/profile/edit/personal-info',
-    complete: false
-  },
-  {
-    name: 'বিয়ে সংক্রান্ত তথ্য',
-    slug: '/profile/edit/marriage-related-info',
-    complete: false
-  },
-  {
     name: 'অন্যান্য তথ্য',
     slug: '/profile/edit/others-info',
     complete: true
@@ -42,11 +42,6 @@ const fields = [
   {
     name: 'যেমন জীবনসঙ্গী আশা করেন',
     slug: '/profile/edit/expectation',
-    complete: false
-  },
-  {
-    name: 'কর্তৃপক্ষের জিজ্ঞাসা',
-    slug: '/profile/edit/authority-question',
     complete: false
   },
   {

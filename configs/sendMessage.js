@@ -1,7 +1,7 @@
 import SendLime from '@sendlime/server-sdk'
 
 const sendMessage = new SendLime({
-  apiKey: process.env.SENDLIME_API_KEY,
-  apiSecret: process.env.SENDLIME_API_SECRET
+  apiKey: '11HGFkuy',
+  apiSecret: 'Hy3KrBnUTl6U2IZtpdOdEJxFJ'
 })
 export default sendMessage

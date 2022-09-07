@@ -13,13 +13,15 @@ import {
   checkField,
   getBioByToken,
   makeRequest,
-  getUIDbyId
+  getUIDbyId,
+  filterBios
 } from '../controllers/post.js'
 import auth from '../middlewares/auth.js'
 const router = Router()
 
 // Biodata CRUD operations
 router.get('/home/:type/:jilla', getBios)
+router.post('/filter-bios', filterBios)
 router.get('/bio/:id', getBioByUserId)
 router.get('/bio-id/:uId', getBioByUID)
 router.get('/bio-uId/:id', getUIDbyId)

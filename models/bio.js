@@ -217,10 +217,16 @@ const bioSchema = new Schema(
     about_me: {
       type: String
     },
-    when_died: {
+    whenDiedWife: {
       type: String
     },
-    divorce_reason: {
+    whenDiedHusband: {
+      type: String
+    },
+    divorceInfo: {
+      type: String
+    },
+    reMarryReason: {
       type: String
     },
     marry_reason: {

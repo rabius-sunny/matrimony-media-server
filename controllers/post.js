@@ -1,6 +1,7 @@
 import bio from '../models/bio.js'
 import inforequest from '../models/inforequest.js'
 import userModel from '../models/user.js'
+import published from '../utils/published.js'
 
 // Biodata CRUD handlers
 export const createBio = async (req, res) => {
@@ -32,7 +33,7 @@ export const createBio = async (req, res) => {
 export const getBioByUserId = async (req, res) => {
   const user = req.params.id
   try {
-    const response = await bio.findOne({ user }).populate('user', 'uId')
+    const response = await bio.findOne({ user }).populate('user', 'uId -_id')
     res.status(200).json({ response })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
@@ -42,8 +43,9 @@ export const getBioByUserId = async (req, res) => {
 export const getBioByUID = async (req, res) => {
   try {
     const user = await userModel.findOne({ uId: req.params.uId })
-    const response = await bio.findOne({ user: user._id })
-    // .populate('user', 'uId -_id')
+    const response = await bio
+      .findOne({ user: user._id })
+      .populate('user', 'uId -_id')
     res.status(200).json({ response: response ?? null })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
@@ -52,6 +54,7 @@ export const getBioByUID = async (req, res) => {
 export const getUIDbyId = async (req, res) => {
   try {
     const user = await userModel.findById(req.params.id)
+    console.log('user', user)
     res.status(200).json({ uId: user.uId })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
@@ -107,6 +110,23 @@ export const getBios = async (req, res) => {
         published = response.filter(item => item.published === true)
       }
       res.status(200).json({ response: response ? published : null })
+    }
+  } catch (error) {
+    res.status(404).json({ error, message: error.message })
+  }
+}
+
+export const filterBios = async (req, res) => {
+  const { condition, jilla, education, madhab, type } = req.body
+  try {
+    if (jilla === 'all') {
+      const data = await bio
+        .find({ condition, education, madhab, type })
+        .populate('user', 'uId -_id')
+
+      const response = await published(data)
+
+      res.status(200).json({ response })
     }
   } catch (error) {
     res.status(404).json({ error, message: error.message })
@@ -198,14 +218,6 @@ function getMethod(num) {
         }
       }
       break
-    case '10':
-      _method = {
-        $set: {
-          'fields.10.complete': true
-        }
-      }
-      break
-
     default:
       return _method
   }

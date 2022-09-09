@@ -41,7 +41,8 @@ const inforequestSchema = new Schema(
     },
     status: {
       type: String,
-      required: true
+      required: false,
+      default: 'pending'
     }
   },
   { timestamps: true }

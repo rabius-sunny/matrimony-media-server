@@ -44,7 +44,7 @@ export const signupadmin = async (req, res) => {
 export const getAllBio = async (req, res) => {
   let bios = []
   try {
-    const response = await bioModel.find()
+    const response = await bioModel.find().populate('user', 'uId -_id')
     response.forEach(bio =>
       bios.push({
         name: bio.name,
@@ -67,7 +67,9 @@ export const getAllBio = async (req, res) => {
 export const getRequestedBio = async (req, res) => {
   let bios = []
   try {
-    const response = await bioModel.find({ published: false })
+    const response = await bioModel
+      .find({ requested: true })
+      .populate('user', 'uId -_id')
     if (response) {
       response.map(bio =>
         bios.push({
@@ -99,7 +101,8 @@ export const getBioById = async (req, res) => {
 export const publishBio = async (req, res) => {
   try {
     const response = await bioModel.findByIdAndUpdate(req.params.id, {
-      published: true
+      published: true,
+      requested: false
     })
     res.status(200).json({ message: 'ok' })
   } catch (error) {
@@ -207,11 +210,13 @@ export const getRequest = async (req, res) => {
 export const acceptRequest = async (req, res) => {
   const { to, text, id } = req.body
   try {
-    sendMessage.message
+    const response = await sendMessage.message
       .sendSms({ to, text })
-      .then(response => {
+      .then(async response => {
         if (response.success) {
-          inforequest.findByIdAndUpdate(id, { status: 'done' })
+          const update = await inforequest.findByIdAndUpdate(id, {
+            status: 'done'
+          })
           return res.status(200).json({ message: 'ok' })
         } else {
           return res.status(500).json({ message: 'failed' })
@@ -219,7 +224,6 @@ export const acceptRequest = async (req, res) => {
       })
       .catch(err => console.log(err))
   } catch (error) {
-    console.log('error', error)
     res.status(500).json({ error, message: error.message })
   }
 }

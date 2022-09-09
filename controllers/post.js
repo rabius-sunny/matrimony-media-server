@@ -33,7 +33,7 @@ export const createBio = async (req, res) => {
 export const getBioByUserId = async (req, res) => {
   const user = req.params.id
   try {
-    const response = await bio.findOne({ user }).populate('user', 'uId -_id')
+    const response = await bio.findOne({ user }).populate('user', 'uId')
     res.status(200).json({ response })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
@@ -54,7 +54,6 @@ export const getBioByUID = async (req, res) => {
 export const getUIDbyId = async (req, res) => {
   try {
     const user = await userModel.findById(req.params.id)
-    console.log('user', user)
     res.status(200).json({ uId: user.uId })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
@@ -117,17 +116,11 @@ export const getBios = async (req, res) => {
 }
 
 export const filterBios = async (req, res) => {
-  const { condition, jilla, education, madhab, type } = req.body
   try {
-    if (jilla === 'all') {
-      const data = await bio
-        .find({ condition, education, madhab, type })
-        .populate('user', 'uId -_id')
+    let data = await bio.find(req.body).populate('user', 'uId -_id')
 
-      const response = await published(data)
-
-      res.status(200).json({ response })
-    }
+    const response = await published(data)
+    res.status(200).json({ response })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
   }

@@ -208,8 +208,14 @@ export const getRequest = async (req, res) => {
   }
 }
 export const acceptRequest = async (req, res) => {
-  const { to, text, id } = req.body
+  const { to, id, target } = req.body
   try {
+    const info = await userModel
+      .findOne({ uId: target })
+      .populate('bio', 'guardian_number receiving_email -_id')
+    const text = `আসসালামু আলাইকুম, আপনার আকাঙ্ক্ষিত বায়োডাটা ${target} এর অভিভাবকের নম্বর : ${info.bio.guardian_number}. বায়োডাটা গ্রহণের ইমেইল এ্যাড্রেস : ${info.bio.receiving_email}.
+    জাযাকাল্লাহু খাইর।`
+
     const response = await sendMessage.message
       .sendSms({ to, text })
       .then(async response => {
@@ -222,7 +228,7 @@ export const acceptRequest = async (req, res) => {
           return res.status(500).json({ message: 'failed' })
         }
       })
-      .catch(err => console.log(err))
+      .catch(err => err)
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }

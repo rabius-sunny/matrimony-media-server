@@ -233,7 +233,7 @@ export const checkField = async (req, res) => {
   const id = req.id
   try {
     const fieldResponse = await userModel.findById(id)
-    const fields = fieldResponse.fields.filter(item => item.complete == false)
+    const fields = fieldResponse.fields.filter(item => item.complete === false)
     res.status(200).json({ fields })
   } catch (error) {
     res.status(500).json({ error, message: error.message })

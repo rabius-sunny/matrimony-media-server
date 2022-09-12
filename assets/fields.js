@@ -37,7 +37,7 @@ const fields = [
   {
     name: 'অন্যান্য তথ্য',
     slug: '/profile/edit/others-info',
-    complete: true
+    complete: false
   },
   {
     name: 'যেমন জীবনসঙ্গী আশা করেন',

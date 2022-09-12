@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { hideBio } from '../controllers/admin.js'
 import {
   createBio,
   getBios,
@@ -14,7 +15,8 @@ import {
   getBioByToken,
   makeRequest,
   getUIDbyId,
-  filterBios
+  filterBios,
+  hideBioByUser
 } from '../controllers/post.js'
 import auth from '../middlewares/auth.js'
 const router = Router()
@@ -26,11 +28,10 @@ router.get('/bio/:id', getBioByUserId)
 router.get('/bio-id/:uId', getBioByUID)
 router.get('/bio-uId/:id', getUIDbyId)
 router.post('/createorupdate-biodata', auth, createBio)
-router.post('/update-biodata')
-router.post('/delete-biodata')
 router.get('/set-field/:num', auth, setField)
 router.get('/check-field', auth, checkField)
 router.get('/getbio-by-token', auth, getBioByToken)
+router.get('/hide-by-user', auth, hideBioByUser)
 
 // Biodata feturing options
 router.get('/get-featureds', getFeatureds)

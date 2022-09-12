@@ -137,6 +137,19 @@ export const getFeatureds = async (req, res) => {
   }
 }
 
+export const hideBioByUser = async (req, res) => {
+  const id = req.id
+  try {
+    const response = await bio.findByIdAndUpdate(id, {
+      published: false,
+      name: 'changed'
+    })
+    res.status(200).json({ message: 'ok' })
+  } catch (error) {
+    res.status(500).json({ error, message: error.message })
+  }
+}
+
 // custom methods
 function getMethod(num) {
   let _method

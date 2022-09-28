@@ -52,6 +52,9 @@ const bioSchema = new Schema(
     birth: {
       type: String
     },
+    age: {
+      type: String
+    },
     complexion: {
       type: String
     },

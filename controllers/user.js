@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 const { sign } = jwt
 import userModel from '../models/user.js'
 import bioModel from '../models/bio.js'
-import fields from '../assets/fields.js'
+import fields from '../static/fields.js'
 import deletehide from '../models/deletehide.js'
 
 // Get a token from jsonwebtoken

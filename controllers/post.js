@@ -1,6 +1,7 @@
 import bio from '../models/bio.js'
 import inforequest from '../models/inforequest.js'
 import userModel from '../models/user.js'
+import projections from '../static/projection.js'
 import published from '../utils/published.js'
 
 // Biodata CRUD handlers
@@ -44,7 +45,7 @@ export const getBioByUID = async (req, res) => {
   try {
     const user = await userModel.findOne({ uId: req.params.uId })
     const response = await bio
-      .findOne({ user: user._id })
+      .findOne({ user: user._id }, projections)
       .populate('user', 'uId -_id')
     res.status(200).json({ response: response ?? null })
   } catch (error) {
@@ -63,7 +64,7 @@ export const getUIDbyId = async (req, res) => {
 export const getBioByToken = async (req, res) => {
   const user = req.id
   try {
-    const response = await bio.findOne({ user })
+    const response = await bio.findOne({ user }, projections)
     res.status(200).json({ bio: response })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
@@ -72,43 +73,31 @@ export const getBioByToken = async (req, res) => {
 
 export const getBios = async (req, res) => {
   const { type, jilla } = req.params
-  let published = []
   try {
     // criteria TYPE
     if (type !== 'all' && jilla === 'all') {
-      const response = await bio.find({ type }).populate('user', 'uId -_id')
-
-      if (response.length > 0) {
-        published = response.filter(item => item.published === true)
-      }
-      res.status(200).json({ response: response ? published : null })
+      const response = await bio
+        .find({ type, published: true }, projections)
+        .populate('user', 'uId -_id')
+      res.status(200).json({ response: response ?? null })
     } else if (jilla !== 'all' && type === 'all') {
       // criteria JILLA
       const response = await bio
-        .find({ permanent_jilla: jilla })
+        .find({ permanent_jilla: jilla, published: true }, projections)
         .populate('user', 'uId -_id')
-
-      if (response.length > 0) {
-        published = response.filter(item => item.published === true)
-      }
-      res.status(200).json({ response: response ? published : null })
+      res.status(200).json({ response: response ?? null })
     } else if (type === 'all' && jilla === 'all') {
       // no criteria
-      const response = await bio.find().populate('user', 'uId -_id')
-      if (response.length > 0) {
-        published = response.filter(item => item.published === true)
-      }
-      res.status(200).json({ response: response ? published : null })
+      const response = await bio
+        .find({ published: true }, projections)
+        .populate('user', 'uId -_id')
+      res.status(200).json({ response: response ?? null })
     } else {
       // criteria both TYPE & JILLA
       const response = await bio
-        .find({ type, permanent_jilla: jilla })
+        .find({ type, permanent_jilla: jilla, published: true }, projections)
         .populate('user', 'uId -_id')
-
-      if (response.length > 0) {
-        published = response.filter(item => item.published === true)
-      }
-      res.status(200).json({ response: response ? published : null })
+      res.status(200).json({ response: response ?? null })
     }
   } catch (error) {
     res.status(404).json({ error, message: error.message })
@@ -117,7 +106,9 @@ export const getBios = async (req, res) => {
 
 export const filterBios = async (req, res) => {
   try {
-    let data = await bio.find(req.body).populate('user', 'uId -_id')
+    let data = await bio
+      .find(req.body, projections)
+      .populate('user', 'uId -_id')
 
     const response = await published(data)
     res.status(200).json({ response })
@@ -129,7 +120,7 @@ export const filterBios = async (req, res) => {
 export const getFeatureds = async (req, res) => {
   try {
     const response = await bio
-      .find({ featured: true })
+      .find({ featured: true }, projections)
       .populate('user', 'uId -_id')
     res.status(200).json({ bios: response ?? null })
   } catch (error) {
@@ -339,3 +330,21 @@ export const makeRequest = async (req, res) => {
     res.status(500).json({ error, message: error.message })
   }
 }
+
+/* 
+ createdAt: 0,
+            updatedAt: 0,
+            __v: 0,
+            bookmarks: 0,
+            published: 0,
+            requested: 0,
+            featured: 0,
+            father_name: 0,
+            mother_name: 0,
+            family_about_bio: 0,
+            is_correct_info: 0,
+            liability: 0,
+            guardian_number: 0,
+            number_relation: 0,
+            receiving_email: 0
+*/

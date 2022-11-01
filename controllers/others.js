@@ -39,6 +39,14 @@ export const postMessage = async (req, res) => {
     res.status(500).json({ error, message: error.message })
   }
 }
+export const getMessage = async (req, res) => {
+  try {
+    const response = await message.find()
+    res.status(200).json({ response })
+  } catch (error) {
+    res.status(500).json({ error, message: error.message })
+  }
+}
 export const deleteMessage = async (req, res) => {
   try {
     const response = await message.findByIdAndDelete(req.params.id)

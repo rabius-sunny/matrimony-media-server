@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   deleteMessage,
   deleteReport,
+  getMessage,
   getReport,
   makeReport,
   postMessage
@@ -15,5 +16,6 @@ router.post('/make-report', auth, makeReport)
 router.get('/reports', adminAuth, getReport)
 router.delete('/report/:id', adminAuth, deleteReport)
 router.post('/post-message', postMessage)
-router.delete('/delete-message/:id', deleteMessage)
+router.get('/admin/get-messages', adminAuth, getMessage)
+router.delete('/admin/delete-message/:id', adminAuth, deleteMessage)
 export default router

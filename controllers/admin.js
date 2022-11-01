@@ -7,6 +7,7 @@ const { sign } = jwt
 import bioModel from '../models/bio.js'
 import deletehide from '../models/deletehide.js'
 import inforequest from '../models/inforequest.js'
+import user from '../models/user.js'
 
 // Get a token from jsonwebtoken
 const getToken = user => sign(user, process.env.ADMIN_SECRET_KEY)
@@ -123,7 +124,8 @@ export const getDeleteHideReq = async (req, res) => {
 export const hideBio = async (req, res) => {
   try {
     const response = await bioModel.findByIdAndUpdate(req.params.id, {
-      published: false
+      published: false,
+      featured: false
     })
     res.status(200).json({ message: 'ok' })
   } catch (error) {
@@ -146,9 +148,11 @@ export const hideBioById = async (req, res) => {
     const updating = await bioModel.findOneAndUpdate(
       { user: req.params.id },
       {
-        published: false
+        published: false,
+        featured: false
       }
     )
+    // Deleting requests from request table
     const deleteRequest = await deletehide.findByIdAndDelete(req.params.reqId)
     res.status(200).json({ message: 'ok' })
   } catch (error) {
@@ -160,6 +164,8 @@ export const deleteBioById = async (req, res) => {
   try {
     const deleteBio = await bioModel.findOneAndDelete({ user: req.params.id })
     const deleteUser = await userModel.findByIdAndDelete(req.params.id)
+
+    // Deleting requests from request table
     const deleteRequest = await deletehide.findByIdAndDelete(req.params.reqId)
     res.status(200).json({ message: 'ok' })
   } catch (error) {
@@ -173,6 +179,18 @@ export const makeFeature = async (req, res) => {
     const response = await bio.findByIdAndUpdate(req.params.id, {
       featured: true
     })
+    const userfromid = await user.findOne({ bio: req.params.id })
+    const phone = userfromid.phone
+    const text = `আসসালামু আলাইকুম, আপনার বায়োডাটাটি ফিচার করা হয়েছে। জাযাকাল্লাহু খাইরান।
+    jannatijuti.com`
+    const sendingMessage = await sendMessage.message
+      .sendSms({
+        to: `88${phone}`,
+        text
+      })
+      .then(res => res => console.log('res', res))
+      .catch(err => console.log('err', err))
+
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })

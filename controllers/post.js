@@ -45,7 +45,7 @@ export const getBioByUID = async (req, res) => {
   try {
     const user = await userModel.findOne({ uId: req.params.uId })
     const response = await bio
-      .findOne({ user: user._id }, projections)
+      .findOne({ user: user._id, published: true }, projections)
       .populate('user', 'uId -_id')
     res.status(200).json({ response: response ?? null })
   } catch (error) {
@@ -106,11 +106,10 @@ export const getBios = async (req, res) => {
 
 export const filterBios = async (req, res) => {
   try {
-    let data = await bio
-      .find(req.body, projections)
+    const response = await bio
+      .find({ ...req.body, published: true }, projections)
       .populate('user', 'uId -_id')
 
-    const response = await published(data)
     res.status(200).json({ response })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
@@ -120,7 +119,7 @@ export const filterBios = async (req, res) => {
 export const getFeatureds = async (req, res) => {
   try {
     const response = await bio
-      .find({ featured: true }, projections)
+      .find({ featured: true, published: true }, projections)
       .populate('user', 'uId -_id')
     res.status(200).json({ bios: response ?? null })
   } catch (error) {
@@ -251,7 +250,7 @@ export const getFavorites = async (req, res) => {
   const id = req.id
   try {
     const data = await userModel
-      .findById(id)
+      .find({ _id: id, published: true })
       .populate('bookmarks', 'type birth condition profession user')
 
     res.status(200).json({ bios: data.bookmarks })
@@ -330,21 +329,3 @@ export const makeRequest = async (req, res) => {
     res.status(500).json({ error, message: error.message })
   }
 }
-
-/* 
- createdAt: 0,
-            updatedAt: 0,
-            __v: 0,
-            bookmarks: 0,
-            published: 0,
-            requested: 0,
-            featured: 0,
-            father_name: 0,
-            mother_name: 0,
-            family_about_bio: 0,
-            is_correct_info: 0,
-            liability: 0,
-            guardian_number: 0,
-            number_relation: 0,
-            receiving_email: 0
-*/

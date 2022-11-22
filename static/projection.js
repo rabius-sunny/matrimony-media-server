@@ -10,7 +10,6 @@ const projections = {
   guardian_number: 0,
   number_relation: 0,
   receiving_email: 0,
-  age: 0,
   createdAt: 0,
   updatedAt: 0,
   __v: 0,

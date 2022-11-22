@@ -106,9 +106,12 @@ export const getBios = async (req, res) => {
 
 export const filterBios = async (req, res) => {
   try {
+    console.log('req body', req.body)
     const response = await bio
       .find({ ...req.body, published: true }, projections)
       .populate('user', 'uId -_id')
+
+    console.log('response', response)
 
     res.status(200).json({ response })
   } catch (error) {
@@ -250,7 +253,7 @@ export const getFavorites = async (req, res) => {
   const id = req.id
   try {
     const data = await userModel
-      .find({ _id: id, published: true })
+      .findById(id)
       .populate('bookmarks', 'type birth condition profession user')
 
     res.status(200).json({ bios: data.bookmarks })

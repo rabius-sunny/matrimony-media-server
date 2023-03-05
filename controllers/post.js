@@ -106,12 +106,9 @@ export const getBios = async (req, res) => {
 
 export const filterBios = async (req, res) => {
   try {
-    console.log('req body', req.body)
     const response = await bio
       .find({ ...req.body, published: true }, projections)
       .populate('user', 'uId -_id')
-
-    console.log('response', response)
 
     res.status(200).json({ response })
   } catch (error) {

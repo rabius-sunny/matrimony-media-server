@@ -1,11 +1,10 @@
-import jwt from 'jsonwebtoken'
-const { verify } = jwt
+const jwt = require('jsonwebtoken')
 
 const adminAuth = (req, res, next) => {
   try {
     const auth_Headers = req.headers.authorization
     const token = auth_Headers.split('Bearer ')[1]
-    verify(token, process.env.ADMIN_SECRET_KEY, (err, user) => {
+    jwt.verify(token, process.env.ADMIN_SECRET_KEY, (err, user) => {
       if (err) {
         return res.status(403).json({ error: err })
       } else {
@@ -18,4 +17,4 @@ const adminAuth = (req, res, next) => {
   }
 }
 
-export default adminAuth
+module.exports = adminAuth

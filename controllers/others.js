@@ -1,7 +1,7 @@
-import message from '../models/message.js'
-import report from '../models/report.js'
+const message = require('../models/message.js')
+const report = require('../models/report.js')
 
-export const getReport = async (req, res) => {
+const getReport = async (req, res) => {
   try {
     const response = await report.find()
     res.status(200).json({ response })
@@ -10,7 +10,7 @@ export const getReport = async (req, res) => {
   }
 }
 
-export const makeReport = async (req, res) => {
+const makeReport = async (req, res) => {
   const user = req.id
   const target = req.params.target
   try {
@@ -21,7 +21,7 @@ export const makeReport = async (req, res) => {
   }
 }
 
-export const deleteReport = async (req, res) => {
+const deleteReport = async (req, res) => {
   const id = req.params.id
   try {
     const response = await report.findByIdAndDelete(id)
@@ -31,7 +31,7 @@ export const deleteReport = async (req, res) => {
   }
 }
 
-export const postMessage = async (req, res) => {
+const postMessage = async (req, res) => {
   try {
     const response = await message.create(req.body)
     res.status(200).json({ message: 'ok' })
@@ -39,7 +39,7 @@ export const postMessage = async (req, res) => {
     res.status(500).json({ error, message: error.message })
   }
 }
-export const getMessage = async (req, res) => {
+const getMessage = async (req, res) => {
   try {
     const response = await message.find()
     res.status(200).json({ response })
@@ -47,11 +47,20 @@ export const getMessage = async (req, res) => {
     res.status(500).json({ error, message: error.message })
   }
 }
-export const deleteMessage = async (req, res) => {
+const deleteMessage = async (req, res) => {
   try {
     const response = await message.findByIdAndDelete(req.params.id)
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }
+}
+
+module.exports = {
+  getReport,
+  makeReport,
+  deleteReport,
+  postMessage,
+  getMessage,
+  deleteMessage
 }

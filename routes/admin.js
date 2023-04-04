@@ -1,5 +1,6 @@
-import { Router } from 'express'
-import {
+const express = require('express')
+const router = express.Router()
+const {
   acceptRequest,
   deleteBio,
   deleteBioById,
@@ -16,11 +17,9 @@ import {
   publishBio,
   signinadmin,
   signupadmin
-} from '../controllers/admin.js'
+} = require('../controllers/admin.js')
 
-import adminAuth from '../middlewares/adminAuth.js'
-
-const router = Router()
+const adminAuth = require('../middlewares/adminAuth.js')
 
 // auth
 router.post('/sign-in', signinadmin)
@@ -48,4 +47,4 @@ router.get('/get-requests', adminAuth, getRequest)
 router.post('/accept-request', adminAuth, acceptRequest)
 router.delete('/delete-request/:id', adminAuth, deleteRequest)
 
-export default router
+module.exports = router

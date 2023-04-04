@@ -1,14 +1,13 @@
-import jwt from 'jsonwebtoken'
-const { sign } = jwt
-import userModel from '../models/user.js'
-import bioModel from '../models/bio.js'
-import fields from '../static/fields.js'
-import deletehide from '../models/deletehide.js'
+const jwt = require('jsonwebtoken')
+const userModel = require('../models/user.js')
+const bioModel = require('../models/bio.js')
+const fields = require('../static/fields.js')
+const deletehide = require('../models/deletehide.js')
 
 // Get a token from jsonwebtoken
-const getToken = user => sign(user, process.env.SECRET_KEY)
+const getToken = user => jwt.sign(user, process.env.SECRET_KEY)
 
-export const signup = async (req, res) => {
+const signup = async (req, res) => {
   const { phone, uId } = req.body
 
   try {
@@ -57,7 +56,7 @@ export const signup = async (req, res) => {
   }
 }
 
-// export const signup = async (req, res) => {
+// const signup = async (req, res) => {
 //   const { username, phone } = req.body
 
 //   try {
@@ -109,7 +108,7 @@ export const signup = async (req, res) => {
 //   }
 // }
 
-export const getUser = async (req, res) => {
+const getUser = async (req, res) => {
   const _id = req.id
   try {
     const response = await userModel
@@ -121,7 +120,7 @@ export const getUser = async (req, res) => {
   }
 }
 
-export const getType = async (req, res) => {
+const getType = async (req, res) => {
   const user = req.id
   try {
     const response = await bioModel.findOne({ user })
@@ -130,7 +129,7 @@ export const getType = async (req, res) => {
     res.status(404).json({ error })
   }
 }
-export const requestDeleteHide = async (req, res) => {
+const requestDeleteHide = async (req, res) => {
   const user = req.id
   try {
     const response = await deletehide.create({ ...req.body, user })
@@ -139,7 +138,7 @@ export const requestDeleteHide = async (req, res) => {
     res.status(404).json({ error })
   }
 }
-export const getUids = async (req, res) => {
+const getUids = async (req, res) => {
   try {
     const response = await userModel.find()
     const uIds = response.map(item => item.uId)
@@ -147,4 +146,12 @@ export const getUids = async (req, res) => {
   } catch (error) {
     res.status(404).json({ error })
   }
+}
+
+module.exports = {
+  signup,
+  getUser,
+  getType,
+  requestDeleteHide,
+  getUids
 }

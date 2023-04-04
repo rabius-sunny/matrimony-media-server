@@ -1,12 +1,12 @@
-import express from 'express'
-import bodyParser from 'body-parser'
-import cors from 'cors'
-import dotenv from 'dotenv'
-import connection from './configs/db.js'
-import PostRouter from './routes/post.js'
-import userRouter from './routes/user.js'
-import adminRoute from './routes/admin.js'
-import othersRoute from './routes/others.js'
+const express = require('express')
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const dotenv = require('dotenv')
+const connection = require('./configs/db.js')
+const PostRouter = require('./routes/post.js')
+const userRouter = require('./routes/user.js')
+const adminRoute = require('./routes/admin.js')
+const othersRoute = require('./routes/others.js')
 
 const PORT = process.env.PORT || 5050
 

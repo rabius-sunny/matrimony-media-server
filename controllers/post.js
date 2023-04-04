@@ -1,11 +1,11 @@
-import bio from '../models/bio.js'
-import inforequest from '../models/inforequest.js'
-import userModel from '../models/user.js'
-import projections from '../static/projection.js'
-import published from '../utils/published.js'
+const bio = require('../models/bio.js')
+const inforequest = require('../models/inforequest.js')
+const userModel = require('../models/user.js')
+const projections = require('../static/projection.js')
+const published = require('../utils/published.js')
 
 // Biodata CRUD handlers
-export const createBio = async (req, res) => {
+const createBio = async (req, res) => {
   const user = req.id
   try {
     const response = await bio.findOne({ user })
@@ -31,7 +31,7 @@ export const createBio = async (req, res) => {
   }
 }
 
-export const getBioByUserId = async (req, res) => {
+const getBioByUserId = async (req, res) => {
   const user = req.params.id
   try {
     const response = await bio.findOne({ user }).populate('user', 'uId')
@@ -41,7 +41,7 @@ export const getBioByUserId = async (req, res) => {
   }
 }
 
-export const getBioByUID = async (req, res) => {
+const getBioByUID = async (req, res) => {
   try {
     const user = await userModel.findOne({ uId: req.params.uId })
     const response = await bio
@@ -52,7 +52,7 @@ export const getBioByUID = async (req, res) => {
     res.status(404).json({ error, message: error.message })
   }
 }
-export const getUIDbyId = async (req, res) => {
+const getUIDbyId = async (req, res) => {
   try {
     const user = await userModel.findById(req.params.id)
     res.status(200).json({ uId: user.uId })
@@ -61,7 +61,7 @@ export const getUIDbyId = async (req, res) => {
   }
 }
 
-export const getBioByToken = async (req, res) => {
+const getBioByToken = async (req, res) => {
   const user = req.id
   try {
     const response = await bio.findOne({ user }, projections)
@@ -71,7 +71,7 @@ export const getBioByToken = async (req, res) => {
   }
 }
 
-export const getBios = async (req, res) => {
+const getBios = async (req, res) => {
   const { type, jilla } = req.params
   try {
     // criteria TYPE
@@ -104,7 +104,7 @@ export const getBios = async (req, res) => {
   }
 }
 
-export const filterBios = async (req, res) => {
+const filterBios = async (req, res) => {
   try {
     const response = await bio
       .find({ ...req.body, published: true }, projections)
@@ -116,7 +116,7 @@ export const filterBios = async (req, res) => {
   }
 }
 
-export const getFeatureds = async (req, res) => {
+const getFeatureds = async (req, res) => {
   try {
     const response = await bio
       .find({ featured: true, published: true }, projections)
@@ -127,7 +127,7 @@ export const getFeatureds = async (req, res) => {
   }
 }
 
-export const hideBioByUser = async (req, res) => {
+const hideBioByUser = async (req, res) => {
   const id = req.id
   try {
     const response = await bio.findOneAndUpdate(
@@ -222,7 +222,7 @@ function getMethod(num) {
   return _method
 }
 
-export const setField = async (req, res) => {
+const setField = async (req, res) => {
   const id = req.id
   const num = req.params.num
   let method = getMethod(num)
@@ -234,7 +234,7 @@ export const setField = async (req, res) => {
   }
 }
 
-export const checkField = async (req, res) => {
+const checkField = async (req, res) => {
   const id = req.id
   try {
     const fieldResponse = await userModel.findById(id)
@@ -246,7 +246,7 @@ export const checkField = async (req, res) => {
 }
 
 // Biodata bookmarking handlers
-export const getFavorites = async (req, res) => {
+const getFavorites = async (req, res) => {
   const id = req.id
   try {
     const data = await userModel
@@ -259,7 +259,7 @@ export const getFavorites = async (req, res) => {
   }
 }
 
-export const addToFavorite = async (req, res) => {
+const addToFavorite = async (req, res) => {
   const { bioid } = req.params
   const _id = req.id
 
@@ -288,7 +288,7 @@ export const addToFavorite = async (req, res) => {
   }
 }
 
-export const checkFavorite = async (req, res) => {
+const checkFavorite = async (req, res) => {
   const id = req.id
   const bioid = req.params.bioid
 
@@ -304,7 +304,7 @@ export const checkFavorite = async (req, res) => {
   }
 }
 
-export const removeFavorite = async (req, res) => {
+const removeFavorite = async (req, res) => {
   const { bioid } = req.params
   const _id = req.id
 
@@ -321,11 +321,30 @@ export const removeFavorite = async (req, res) => {
 }
 
 // Info request options
-export const makeRequest = async (req, res) => {
+const makeRequest = async (req, res) => {
   try {
     const response = await inforequest.create(req.body)
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }
+}
+
+module.exports = {
+  createBio,
+  getBioByUserId,
+  getBioByUID,
+  getUIDbyId,
+  getBioByToken,
+  getBios,
+  filterBios,
+  getFeatureds,
+  hideBioByUser,
+  setField,
+  checkField,
+  getFavorites,
+  addToFavorite,
+  checkFavorite,
+  removeFavorite,
+  makeRequest
 }

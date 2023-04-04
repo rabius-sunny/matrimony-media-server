@@ -1,5 +1,4 @@
-import mongoose from 'mongoose'
-const { model, Schema } = mongoose
+const { model, Schema } = require('mongoose')
 
 const reportSchema = new Schema(
   {
@@ -15,4 +14,4 @@ const reportSchema = new Schema(
   { timestamps: true }
 )
 
-export default model('report', reportSchema)
+module.exports = model('report', reportSchema)

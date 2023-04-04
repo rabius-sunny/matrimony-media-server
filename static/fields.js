@@ -51,4 +51,4 @@ const fields = [
   }
 ]
 
-export default fields
+module.exports = fields

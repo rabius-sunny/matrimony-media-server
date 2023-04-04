@@ -1,5 +1,4 @@
-import mongoose from 'mongoose'
-const { model, Schema } = mongoose
+const { model, Schema } = require('mongoose')
 
 const bioSchema = new Schema(
   {
@@ -319,4 +318,4 @@ const bioSchema = new Schema(
   }
 )
 
-export default model('bio', bioSchema)
+module.exports = model('bio', bioSchema)

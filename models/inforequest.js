@@ -1,5 +1,4 @@
-import mongoose from 'mongoose'
-const { model, Schema } = mongoose
+const { model, Schema } = require('mongoose')
 
 const inforequestSchema = new Schema(
   {
@@ -48,4 +47,4 @@ const inforequestSchema = new Schema(
   { timestamps: true }
 )
 
-export default model('inforequest', inforequestSchema)
+module.exports = model('inforequest', inforequestSchema)

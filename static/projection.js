@@ -18,4 +18,4 @@ const projections = {
   featured: 0
 }
 
-export default projections
+module.exports = projections

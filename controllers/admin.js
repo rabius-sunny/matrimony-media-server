@@ -1,19 +1,18 @@
-import jwt from 'jsonwebtoken'
-import sendMessage from '../configs/sendMessage.js'
-import userModel from '../models/user.js'
-import adminModel from '../models/admin.js'
-import bio from '../models/bio.js'
-const { sign } = jwt
-import bioModel from '../models/bio.js'
-import deletehide from '../models/deletehide.js'
-import inforequest from '../models/inforequest.js'
-import user from '../models/user.js'
+const jwt = require('jsonwebtoken')
+const sendMessage = require('../configs/sendMessage.js')
+const userModel = require('../models/user.js')
+const adminModel = require('../models/admin.js')
+const bio = require('../models/bio.js')
+const bioModel = require('../models/bio.js')
+const deletehide = require('../models/deletehide.js')
+const inforequest = require('../models/inforequest.js')
+const user = require('../models/user.js')
 
 // Get a token from jsonwebtoken
-const getToken = user => sign(user, process.env.ADMIN_SECRET_KEY)
+const getToken = user => jwt.sign(user, process.env.ADMIN_SECRET_KEY)
 
 // auth operations
-export const signinadmin = async (req, res) => {
+const signinadmin = async (req, res) => {
   const { email, password, salt } = req.body
 
   try {
@@ -32,7 +31,7 @@ export const signinadmin = async (req, res) => {
   }
 }
 
-export const signupadmin = async (req, res) => {
+const signupadmin = async (req, res) => {
   try {
     const response = await adminModel.create(req.body)
     res.status(200).json({ message: 'Successfully created Admin' })
@@ -42,7 +41,7 @@ export const signupadmin = async (req, res) => {
 }
 
 // bio operations
-export const getAllBio = async (req, res) => {
+const getAllBio = async (req, res) => {
   let bios = []
   try {
     const response = await bioModel.find().populate('user', 'uId -_id')
@@ -65,7 +64,7 @@ export const getAllBio = async (req, res) => {
   }
 }
 
-export const getRequestedBio = async (req, res) => {
+const getRequestedBio = async (req, res) => {
   let bios = []
   try {
     const response = await bioModel
@@ -90,7 +89,7 @@ export const getRequestedBio = async (req, res) => {
   }
 }
 
-export const getBioById = async (req, res) => {
+const getBioById = async (req, res) => {
   try {
     const response = await bioModel.findById(req.params.id)
     res.status(200).json({ response })
@@ -99,7 +98,7 @@ export const getBioById = async (req, res) => {
   }
 }
 
-export const publishBio = async (req, res) => {
+const publishBio = async (req, res) => {
   try {
     const response = await bioModel.findByIdAndUpdate(req.params.id, {
       published: true,
@@ -112,7 +111,7 @@ export const publishBio = async (req, res) => {
 }
 
 // delete or hide
-export const getDeleteHideReq = async (req, res) => {
+const getDeleteHideReq = async (req, res) => {
   try {
     const response = await deletehide.find().populate('user', 'uId username')
     return res.status(200).json({ requests: response })
@@ -121,7 +120,7 @@ export const getDeleteHideReq = async (req, res) => {
   }
 }
 
-export const hideBio = async (req, res) => {
+const hideBio = async (req, res) => {
   try {
     const response = await bioModel.findByIdAndUpdate(req.params.id, {
       published: false,
@@ -133,7 +132,7 @@ export const hideBio = async (req, res) => {
   }
 }
 
-export const deleteBio = async (req, res) => {
+const deleteBio = async (req, res) => {
   try {
     const deleteBio = await bioModel.findByIdAndDelete(req.params.id)
     const deleteUser = await userModel.findOneAndDelete({ bio: req.params.id })
@@ -143,7 +142,7 @@ export const deleteBio = async (req, res) => {
   }
 }
 
-export const hideBioById = async (req, res) => {
+const hideBioById = async (req, res) => {
   try {
     const updating = await bioModel.findOneAndUpdate(
       { user: req.params.id },
@@ -160,7 +159,7 @@ export const hideBioById = async (req, res) => {
   }
 }
 
-export const deleteBioById = async (req, res) => {
+const deleteBioById = async (req, res) => {
   try {
     const deleteBio = await bioModel.findOneAndDelete({ user: req.params.id })
     const deleteUser = await userModel.findByIdAndDelete(req.params.id)
@@ -174,7 +173,7 @@ export const deleteBioById = async (req, res) => {
 }
 
 // featuring operation
-export const makeFeature = async (req, res) => {
+const makeFeature = async (req, res) => {
   try {
     const response = await bio.findByIdAndUpdate(req.params.id, {
       featured: true
@@ -197,7 +196,7 @@ export const makeFeature = async (req, res) => {
   }
 }
 
-export const deleteFeature = async (req, res) => {
+const deleteFeature = async (req, res) => {
   try {
     const response = await bio.findByIdAndUpdate(req.params.id, {
       featured: false
@@ -209,7 +208,7 @@ export const deleteFeature = async (req, res) => {
 }
 
 // info requests
-export const getInfoRequests = async (req, res) => {
+const getInfoRequests = async (req, res) => {
   try {
     const response = await inforequest.find()
     res.status(200).json({ message: 'ok', data: response })
@@ -217,7 +216,7 @@ export const getInfoRequests = async (req, res) => {
     res.status(404).json({ message: 'Not found' })
   }
 }
-export const getRequest = async (req, res) => {
+const getRequest = async (req, res) => {
   try {
     const response = await inforequest.find()
     res.status(200).json({ response })
@@ -225,7 +224,7 @@ export const getRequest = async (req, res) => {
     res.status(500).json({ error, message: error.message })
   }
 }
-export const acceptRequest = async (req, res) => {
+const acceptRequest = async (req, res) => {
   const { to, id, target } = req.body
   try {
     const info = await userModel
@@ -251,11 +250,31 @@ export const acceptRequest = async (req, res) => {
     res.status(500).json({ error, message: error.message })
   }
 }
-export const deleteRequest = async (req, res) => {
+const deleteRequest = async (req, res) => {
   try {
     const response = await inforequest.findByIdAndDelete(req.params.id)
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }
+}
+
+module.exports = {
+  signinadmin,
+  signupadmin,
+  getAllBio,
+  getRequestedBio,
+  getBioById,
+  publishBio,
+  getDeleteHideReq,
+  hideBio,
+  deleteBio,
+  hideBioById,
+  deleteBioById,
+  makeFeature,
+  deleteFeature,
+  getInfoRequests,
+  getRequest,
+  acceptRequest,
+  deleteRequest
 }

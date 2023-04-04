@@ -1,6 +1,4 @@
-import mongoose from 'mongoose'
-const { model, Schema } = mongoose
-
+const { model, Schema } = require('mongoose')
 const deleteHideSchema = new Schema(
   {
     user: {
@@ -19,4 +17,4 @@ const deleteHideSchema = new Schema(
   { timestamps: true }
 )
 
-export default model('deletehide', deleteHideSchema)
+module.exports = model('deletehide', deleteHideSchema)

@@ -1,6 +1,4 @@
-import { Router } from 'express'
-import { hideBio } from '../controllers/admin.js'
-import {
+const {
   createBio,
   getBios,
   getBioByUserId,
@@ -17,9 +15,10 @@ import {
   getUIDbyId,
   filterBios,
   hideBioByUser
-} from '../controllers/post.js'
-import auth from '../middlewares/auth.js'
-const router = Router()
+} = require('../controllers/post.js')
+const auth = require('../middlewares/auth.js')
+const express = require('express')
+const router = express.Router()
 
 // Biodata CRUD operations
 router.get('/home/:type/:jilla', getBios)
@@ -45,4 +44,4 @@ router.delete('/delete-favorites/:bioid', auth, removeFavorite)
 // Bio info request options
 router.post('/request-info', makeRequest)
 
-export default router
+module.exports = router

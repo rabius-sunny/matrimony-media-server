@@ -1,11 +1,10 @@
-import jwt from 'jsonwebtoken'
-const { verify } = jwt
+const jwt = require('jsonwebtoken')
 
 const auth = (req, res, next) => {
   try {
     const auth_Headers = req.headers.authorization
     const token = auth_Headers.split('Bearer ')[1]
-    verify(token, process.env.SECRET_KEY, (err, user) => {
+    jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
       if (err) {
         return res.status(403)
       } else {
@@ -20,4 +19,4 @@ const auth = (req, res, next) => {
   }
 }
 
-export default auth
+module.exports = auth

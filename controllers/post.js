@@ -2,7 +2,6 @@ const bio = require('../models/bio.js')
 const inforequest = require('../models/inforequest.js')
 const userModel = require('../models/user.js')
 const projections = require('../static/projection.js')
-const published = require('../utils/published.js')
 
 // Biodata CRUD handlers
 const createBio = async (req, res) => {
@@ -251,7 +250,7 @@ const getFavorites = async (req, res) => {
   try {
     const data = await userModel
       .findById(id)
-      .populate('bookmarks', 'type birth condition profession user')
+      .populate('bookmarks', 'type birth condition profession user -_id')
 
     res.status(200).json({ bios: data.bookmarks })
   } catch (error) {
@@ -259,11 +258,23 @@ const getFavorites = async (req, res) => {
   }
 }
 
+// Get bookmarks by array of bio ids
+const getFavoritesFromIds = async (req, res) => {
+  const uIds = req.body.uIds
+
+  try {
+    const user = await userModel
+      .find({ uId: { $in: uIds }, published: true }, { bio: 1, _id: 0 })
+      .populate('bio', 'type condition birth profession user')
+    res.status(200).json({ response: user })
+  } catch (error) {
+    res.status(404).json({ error, message: error.message })
+  }
+}
+
 const addToFavorite = async (req, res) => {
   const { bioid } = req.params
   const _id = req.id
-
-  if (!_id) return res.status(401).json({ message: 'UnAuthorized' })
 
   try {
     const pushToUser = await userModel.updateOne(
@@ -343,6 +354,7 @@ module.exports = {
   setField,
   checkField,
   getFavorites,
+  getFavoritesFromIds,
   addToFavorite,
   checkFavorite,
   removeFavorite,

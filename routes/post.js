@@ -8,14 +8,14 @@ const {
   checkFavorite,
   removeFavorite,
   getFeatureds,
-  setField,
   checkField,
   getBioByToken,
   makeRequest,
   getUIDbyId,
   filterBios,
   hideBioByUser,
-  getFavoritesFromIds
+  getFavoritesFromIds,
+  getSpecificData
 } = require('../controllers/post.js')
 const auth = require('../middlewares/auth.js')
 const express = require('express')
@@ -28,9 +28,9 @@ router.get('/bio/:id', getBioByUserId)
 router.get('/bio-id/:uId', getBioByUID)
 router.get('/bio-uId/:id', getUIDbyId)
 router.post('/createorupdate-biodata', auth, createBio)
-router.get('/set-field/:num', auth, setField)
 router.get('/check-field', auth, checkField)
 router.get('/getbio-by-token', auth, getBioByToken)
+router.get('/get-specific-data/:key', auth, getSpecificData)
 router.get('/hide-by-user', auth, hideBioByUser)
 
 // Biodata feturing options

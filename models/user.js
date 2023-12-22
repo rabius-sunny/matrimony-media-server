@@ -20,12 +20,48 @@ const userSchema = new Schema(
         ref: 'bio'
       }
     ],
-    fields: [
-      {
-        type: Object,
-        required: false
+    fields: {
+      primary: {
+        type: Boolean,
+        default: false
+      },
+      personal: {
+        type: Boolean,
+        default: false
+      },
+      marriage: {
+        type: Boolean,
+        default: false
+      },
+      general: {
+        type: Boolean,
+        default: false
+      },
+      family: {
+        type: Boolean,
+        default: false
+      },
+      address: {
+        type: Boolean,
+        default: false
+      },
+      education: {
+        type: Boolean,
+        default: false
+      },
+      others: {
+        type: Boolean,
+        default: false
+      },
+      expectation: {
+        type: Boolean,
+        default: false
+      },
+      contact: {
+        type: Boolean,
+        default: false
       }
-    ]
+    }
   },
   { timestamps: true }
 )

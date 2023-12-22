@@ -17,18 +17,15 @@ const bioSchema = new Schema(
     ],
     published: {
       type: Boolean,
-      default: false,
-      required: false
+      default: false
     },
     requested: {
       type: Boolean,
-      default: false,
-      required: false
+      default: false
     },
     featured: {
       type: Boolean,
-      default: false,
-      required: false
+      default: false
     },
     type: {
       type: String
@@ -144,13 +141,7 @@ const bioSchema = new Schema(
     mother_profession: {
       type: String
     },
-    brothers: {
-      type: String
-    },
     brothers_info: {
-      type: String
-    },
-    sisters: {
       type: String
     },
     sisters_info: {
@@ -249,9 +240,6 @@ const bioSchema = new Schema(
     job_after_marriage: {
       type: String
     },
-    continue_job: {
-      type: String
-    },
     living_place: {
       type: String
     },
@@ -292,15 +280,6 @@ const bioSchema = new Schema(
       type: String
     },
     ex_features: {
-      type: String
-    },
-    family_about_bio: {
-      type: String
-    },
-    is_correct_info: {
-      type: String
-    },
-    liability: {
       type: String
     },
     guardian_number: {

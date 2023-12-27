@@ -2,9 +2,6 @@ const { model, Schema } = require('mongoose')
 
 const bioSchema = new Schema(
   {
-    name: {
-      type: String
-    },
     user: {
       type: Schema.Types.ObjectId,
       ref: 'user'
@@ -27,12 +24,19 @@ const bioSchema = new Schema(
       type: Boolean,
       default: false
     },
+
+    // Primary info
+    name: {
+      type: String
+    },
     type: {
       type: String
     },
     condition: {
       type: String
     },
+
+    // General Info
     permanent_jilla: {
       type: String
     },
@@ -69,6 +73,8 @@ const bioSchema = new Schema(
     income: {
       type: String
     },
+
+    // Address info
     permanent_address: {
       type: String
     },
@@ -78,9 +84,13 @@ const bioSchema = new Schema(
     where_lived: {
       type: String
     },
+
+    // Education
     education: {
       type: String
     },
+
+    // Madrasa Education
     hafej: {
       type: String
     },
@@ -90,22 +100,12 @@ const bioSchema = new Schema(
     dawra_details: {
       type: String
     },
-    dawra_year: {
-      type: String
-    },
     takhassus: {
       type: String
     },
-    takhassus_details: {
-      type: String
-    },
-    highest_education: {
-      type: String
-    },
+
+    // General Education
     secondary: {
-      type: String
-    },
-    class: {
       type: String
     },
     secondary_details: {
@@ -114,21 +114,20 @@ const bioSchema = new Schema(
     higher: {
       type: String
     },
-    higher_year: {
-      type: String
-    },
     higher_details: {
-      type: String
-    },
-    diploma_details: {
       type: String
     },
     honors_details: {
       type: String
     },
+    highest_education: {
+      type: String
+    },
     another_education: {
       type: String
     },
+
+    // Family Info
     father_name: {
       type: String
     },
@@ -153,6 +152,8 @@ const bioSchema = new Schema(
     family_status: {
       type: String
     },
+
+    // personal Info
     dress: {
       type: String
     },
@@ -210,6 +211,8 @@ const bioSchema = new Schema(
     about_me: {
       type: String
     },
+
+    // Marriage Related Info
     whenDiedWife: {
       type: String
     },
@@ -231,27 +234,25 @@ const bioSchema = new Schema(
     family_planning: {
       type: String
     },
-    managing_hijab: {
-      type: String
-    },
     education_after_marriage: {
       type: String
     },
     job_after_marriage: {
       type: String
     },
-    living_place: {
-      type: String
-    },
     demand: {
       type: String
     },
+
+    // Others info
     profession_info: {
       type: String
     },
     special_acknowledgement: {
       type: String
     },
+
+    // Expectation
     ex_year: {
       type: String
     },
@@ -282,6 +283,8 @@ const bioSchema = new Schema(
     ex_features: {
       type: String
     },
+
+    // Contact
     guardian_number: {
       type: String
     },

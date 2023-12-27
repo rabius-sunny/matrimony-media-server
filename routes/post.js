@@ -15,7 +15,8 @@ const {
   filterBios,
   hideBioByUser,
   getFavoritesFromIds,
-  getSpecificData
+  getSpecificData,
+  requestPublish
 } = require('../controllers/post.js')
 const auth = require('../middlewares/auth.js')
 const express = require('express')
@@ -28,6 +29,7 @@ router.get('/bio/:id', getBioByUserId)
 router.get('/bio-id/:uId', getBioByUID)
 router.get('/bio-uId/:id', getUIDbyId)
 router.post('/createorupdate-biodata', auth, createBio)
+router.get('/request-publish', auth, requestPublish)
 router.get('/check-field', auth, checkField)
 router.get('/getbio-by-token', auth, getBioByToken)
 router.get('/get-specific-data/:key', auth, getSpecificData)

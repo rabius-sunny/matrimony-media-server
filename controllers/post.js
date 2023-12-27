@@ -2,19 +2,79 @@ const bio = require('../models/bio.js')
 const inforequest = require('../models/inforequest.js')
 const userModel = require('../models/user.js')
 const projections = require('../static/projection.js')
-const getSelection = require('../static/selection.js')
-const { selectionString } = require('../static/selection.js')
-const filterEmptyProperties = require('../utils/filterEmptyObject.js')
+const { getSelection } = require('../static/selection.js')
+const { filterEmptyProperties } = require('../utils/filterEmptyObject.js')
+const {
+  marriageFields,
+  generalFields,
+  madrasaFields,
+  formRoutes,
+  getFilled,
+  getUnfilled
+} = require('../static/fields.js')
+const getGroupData = require('../utils/getGroupData.js')
 
 // Biodata CRUD handlers
+
 const createBio = async (req, res) => {
   const user = req.id
   const { key, ...rest } = req.body
   try {
-    await bio.findOneAndUpdate({ user }, { ...rest })
-    await userModel.findByIdAndUpdate(user, {
-      $set: { [`fields.${key}`]: true }
-    })
+    const userbio = await bio.findOne({ user })
+    if (key === 'primary') {
+      if (rest.education !== userbio.education) {
+        await bio.findOneAndUpdate(
+          { user },
+          {
+            ...rest,
+            ...generalFields,
+            ...madrasaFields,
+            published: false,
+            featured: false
+          }
+        )
+        await userModel.findByIdAndUpdate(user, {
+          $set: { [`fields.primary`]: true, [`fields.education`]: false }
+        })
+      }
+      if (rest.type !== userbio.type || rest.condition !== userbio.condition) {
+        await bio.findOneAndUpdate(
+          { user },
+          { ...rest, ...marriageFields, published: false, featured: false }
+        )
+        await userModel.findByIdAndUpdate(user, {
+          $set: { [`fields.primary`]: true, [`fields.marriage`]: false }
+        })
+      }
+      await bio.findOneAndUpdate(
+        { user },
+        { ...rest, published: false, featured: false }
+      )
+      await userModel.findByIdAndUpdate(user, {
+        $set: { [`fields.primary`]: true }
+      })
+    } else {
+      await bio.findOneAndUpdate(
+        { user },
+        { ...rest, published: false, featured: false }
+      )
+      await userModel.findByIdAndUpdate(user, {
+        $set: { [`fields.${key}`]: true }
+      })
+    }
+    res.status(200).json({ message: 'ok' })
+  } catch (error) {
+    res.status(500).json({ error, message: error.message })
+  }
+}
+
+const requestPublish = async (req, res) => {
+  const user = req.id
+  try {
+    await bio.findOneAndUpdate(
+      { user },
+      { requested: true, published: false, featured: false }
+    )
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
@@ -56,8 +116,11 @@ const getUIDbyId = async (req, res) => {
 const getBioByToken = async (req, res) => {
   const user = req.id
   try {
-    const response = await bio.findOne({ user }, projections)
-    res.status(200).json({ bio: response })
+    const data = await bio.findOne({ user }, projections)
+    const userdata = await userModel.findById(user)
+    const unfilled = getUnfilled(userdata.toObject())
+    const response = getGroupData(data.toObject())
+    res.status(200).json({ bio: response, unfilled })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
   }
@@ -71,12 +134,17 @@ const getSpecificData = async (req, res) => {
       .select(selectionString)
       .populate('user', 'uId -_id')
     const userdata = await userModel.findById(user)
-    const filledForms = Object.keys(userdata.fields).filter(
-      (key) => userdata.fields[key]
-    )
-    res.status(200).json({ bio: biodata, filled: filledForms })
+    const filled = getFilled(userdata.toObject())
+    const unfilled = getUnfilled(userdata.toObject())
+
+    const filteredData = filterEmptyProperties(biodata.toObject())
+    res.status(200).json({
+      bio: filteredData,
+      filled,
+      unfilled: req.params.key === 'contact' ? unfilled : null
+    })
   } catch (error) {
-    res.status(404).json({ error, message: error.message })
+    res.status(500).json({ error, message: error.message })
   }
 }
 
@@ -154,10 +222,11 @@ const hideBioByUser = async (req, res) => {
 const checkField = async (req, res) => {
   const id = req.id
   try {
-    const fieldResponse = await userModel.findById(id)
-    const fields = fieldResponse.fields.filter(
-      (item) => item.complete === false
+    const user = await userModel.findById(id)
+    const unfilled = Object.keys(user.fields).filter(
+      (item) => !user.fields[item]
     )
+    const fields = unfilled.map((item) => formRoutes[item])
     res.status(200).json({ fields })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
@@ -263,6 +332,7 @@ const makeRequest = async (req, res) => {
 
 module.exports = {
   createBio,
+  requestPublish,
   getBioByUserId,
   getBioByUID,
   getUIDbyId,

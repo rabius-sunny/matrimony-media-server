@@ -14,7 +14,8 @@ const selectionString = {
   others: 'type profession_info special_acknowledgement',
   expectation:
     'type ex_year ex_complexion ex_height ex_education ex_jilla ex_marrital_condition ex_profession ex_financial_condition ex_family_condition ex_features',
-  contact: 'type guardian_number number_relation receiving_email'
+  contact: 'type guardian_number number_relation receiving_email',
+  card: 'type condition permanent_address permanent_division current_address current_division birth complexion height weight blood profession'
 }
 
 const getSelection = (key) => selectionString[key]

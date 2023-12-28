@@ -9,7 +9,7 @@ const inforequest = require('../models/inforequest.js')
 const user = require('../models/user.js')
 
 // Get a token from jsonwebtoken
-const getToken = user => jwt.sign(user, process.env.ADMIN_SECRET_KEY)
+const getToken = (user) => jwt.sign(user, process.env.ADMIN_SECRET_KEY)
 
 // auth operations
 const signinadmin = async (req, res) => {
@@ -25,9 +25,9 @@ const signinadmin = async (req, res) => {
         id: response._id
       })
       res.status(200).json({ message: 'Sign in successfully', token })
-    } else res.status(403).json({ message: 'UnAuthorized!' })
+    } else res.status(404).json({ message: error.message })
   } catch (error) {
-    res.status(403).json({ message: 'UnAuthorized!' })
+    res.status(404).json({ message: error.message })
   }
 }
 
@@ -45,7 +45,7 @@ const getAllBio = async (req, res) => {
   let bios = []
   try {
     const response = await bioModel.find().populate('user', 'uId -_id')
-    response.forEach(bio =>
+    response.forEach((bio) =>
       bios.push({
         name: bio.name,
         condition: bio.condition,
@@ -71,7 +71,7 @@ const getRequestedBio = async (req, res) => {
       .find({ requested: true })
       .populate('user', 'uId -_id')
     if (response) {
-      response.map(bio =>
+      response.map((bio) =>
         bios.push({
           name: bio.name,
           condition: bio.condition,
@@ -144,7 +144,7 @@ const deleteBio = async (req, res) => {
 
 const hideBioById = async (req, res) => {
   try {
-    const updating = await bioModel.findOneAndUpdate(
+    await bioModel.findOneAndUpdate(
       { user: req.params.id },
       {
         published: false,
@@ -152,7 +152,7 @@ const hideBioById = async (req, res) => {
       }
     )
     // Deleting requests from request table
-    const deleteRequest = await deletehide.findByIdAndDelete(req.params.reqId)
+    await deletehide.findByIdAndDelete(req.params.reqId)
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
@@ -187,8 +187,8 @@ const makeFeature = async (req, res) => {
         to: `88${phone}`,
         text
       })
-      .then(res => res => console.log('res', res))
-      .catch(err => console.log('err', err))
+      .then((res) => (res) => console.log('res', res))
+      .catch((err) => console.log('err', err))
 
     res.status(200).json({ message: 'ok' })
   } catch (error) {
@@ -235,7 +235,7 @@ const acceptRequest = async (req, res) => {
 
     const response = await sendMessage.message
       .sendSms({ to, text })
-      .then(async response => {
+      .then(async (response) => {
         if (response.success) {
           const update = await inforequest.findByIdAndUpdate(id, {
             status: 'done'
@@ -245,7 +245,7 @@ const acceptRequest = async (req, res) => {
           return res.status(500).json({ message: 'failed' })
         }
       })
-      .catch(err => err)
+      .catch((err) => err)
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }

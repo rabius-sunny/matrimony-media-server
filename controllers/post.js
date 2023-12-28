@@ -93,17 +93,31 @@ const getBioByUserId = async (req, res) => {
   }
 }
 
-const getBioByUID = async (req, res) => {
+const getBioByToken = async (req, res) => {
+  const user = req.id
   try {
-    const user = await userModel.findOne({ uId: req.params.uId })
-    const response = await bio
-      .findOne({ user: user._id, published: true }, projections)
-      .populate('user', 'uId -_id')
-    res.status(200).json({ response: response ?? null })
+    const data = await bio.findOne({ user }, projections)
+    const userdata = await userModel.findById(user)
+    const unfilled = getUnfilled(userdata.toObject())
+    const biodata = getGroupData(data.toObject())
+    res.status(200).json({ bio: biodata, uId: userdata.uId, unfilled })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
   }
 }
+
+const getBioByUID = async (req, res) => {
+  const uId = req.params.uId
+  try {
+    const user = await userModel.findOne({ uId })
+    const data = await bio.findById(user.bio /* ,projections */)
+    const biodata = getGroupData(data.toObject())
+    res.status(200).json({ bio: biodata })
+  } catch (error) {
+    res.status(404).json({ error, message: error.message })
+  }
+}
+
 const getUIDbyId = async (req, res) => {
   try {
     const user = await userModel.findById(req.params.id)
@@ -113,18 +127,6 @@ const getUIDbyId = async (req, res) => {
   }
 }
 
-const getBioByToken = async (req, res) => {
-  const user = req.id
-  try {
-    const data = await bio.findOne({ user }, projections)
-    const userdata = await userModel.findById(user)
-    const unfilled = getUnfilled(userdata.toObject())
-    const response = getGroupData(data.toObject())
-    res.status(200).json({ bio: response, unfilled })
-  } catch (error) {
-    res.status(404).json({ error, message: error.message })
-  }
-}
 const getSpecificData = async (req, res) => {
   const user = req.id
   const selectionString = getSelection(req.params.key)
@@ -262,59 +264,49 @@ const getFavoritesFromIds = async (req, res) => {
 }
 
 const addToFavorite = async (req, res) => {
-  const { bioid } = req.params
-  const _id = req.id
-
+  const uId = req.params.uId
+  const id = req.id
   try {
-    const pushToUser = await userModel.updateOne(
-      { _id },
-      {
-        $push: {
-          bookmarks: bioid
-        }
-      }
-    )
-    const pushToBio = await bio.updateOne(
-      { _id: bioid },
-      {
-        $push: {
-          bookmarks: _id
-        }
-      }
-    )
+    if (!uId) {
+      return res.status(500).json({ message: 'no uId found' })
+    }
+    const user = await userModel.findById(id)
+    user.bookmarks.push(uId)
+    await user.save()
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ message: 'Failed to bookmark' })
   }
 }
 
-const checkFavorite = async (req, res) => {
+const removeFavorite = async (req, res) => {
+  const uId = req.params.uId
   const id = req.id
-  const bioid = req.params.bioid
 
   try {
-    const user = await userModel.findById(id)
-    if (user.bookmarks.includes(bioid)) {
-      res.status(200).json({ message: 'exists' })
-    } else {
-      res.status(200).json({ message: 'Not exists' })
+    if (!uId) {
+      return res.status(500).json({ message: 'no uId found' })
     }
+    const user = await userModel.findById(id)
+    user.bookmarks.pull(uId)
+    await user.save()
+    res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }
 }
 
-const removeFavorite = async (req, res) => {
-  const { bioid } = req.params
-  const _id = req.id
+const checkFavorite = async (req, res) => {
+  const uId = req.params.uId
+  const id = req.id
 
   try {
-    const response = await userModel.findByIdAndUpdate(_id, {
-      $pull: {
-        bookmarks: bioid
-      }
-    })
-    res.status(200).json({ message: 'ok' })
+    const user = await userModel.findById(id)
+    if (user.bookmarks.includes(uId)) {
+      res.status(200).json({ message: 'exists' })
+    } else {
+      res.status(200).json({ message: 'Not exists' })
+    }
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }

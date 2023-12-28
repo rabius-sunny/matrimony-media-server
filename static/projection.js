@@ -1,6 +1,5 @@
 const projections = {
   name: 0,
-  guardian_number: 0,
   bookmarks: 0,
   father_name: 0,
   mother_name: 0,

@@ -14,12 +14,9 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'bio'
     },
-    bookmarks: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'bio'
-      }
-    ],
+    bookmarks: {
+      type: [String]
+    },
     fields: {
       primary: {
         type: Boolean,

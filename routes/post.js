@@ -1,10 +1,9 @@
 const {
   createBio,
-  getBios,
+  initialFilter,
   getBioByUserId,
   getBioByUID,
   addToFavorite,
-  getFavorites,
   checkFavorite,
   removeFavorite,
   getFeatureds,
@@ -14,7 +13,7 @@ const {
   getUIDbyId,
   filterBios,
   hideBioByUser,
-  getFavoritesFromIds,
+  getFavoritesFromuIds,
   getSpecificData,
   requestPublish
 } = require('../controllers/post.js')
@@ -23,7 +22,7 @@ const express = require('express')
 const router = express.Router()
 
 // Biodata CRUD operations
-router.get('/home/:type/:jilla', getBios)
+router.post('/initial-filter', initialFilter)
 router.post('/filter-bios', filterBios)
 router.get('/bio/:id', getBioByUserId)
 router.get('/bio-id/:uId', getBioByUID)
@@ -39,11 +38,10 @@ router.get('/hide-by-user', auth, hideBioByUser)
 router.get('/get-featureds', getFeatureds)
 
 // Biodata bookmarking options
-router.get('/favorites', auth, getFavorites)
-router.post('/favorites', auth, getFavoritesFromIds)
+router.post('/favorites', auth, getFavoritesFromuIds)
 router.get('/post-favorites/:uId', auth, addToFavorite)
-router.get('/is-favorite/:bioid', auth, checkFavorite)
-router.delete('/delete-favorites/:bioid', auth, removeFavorite)
+router.get('/is-favorite/:uId', auth, checkFavorite)
+router.delete('/delete-favorites/:uId', auth, removeFavorite)
 
 // Bio info request options
 router.post('/request-info', makeRequest)

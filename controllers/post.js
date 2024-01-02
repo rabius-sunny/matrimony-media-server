@@ -150,46 +150,65 @@ const getSpecificData = async (req, res) => {
   }
 }
 
-const getBios = async (req, res) => {
-  const { type, jilla } = req.params
+const initialFilter = async (req, res) => {
+  const filteredCriteria = filterEmptyProperties(req.body)
+  const { type, address } = filteredCriteria
   try {
-    // criteria TYPE
-    if (type !== 'all' && jilla === 'all') {
+    if (address) {
       const response = await bio
-        .find({ type, published: true }, projections)
+        .find({
+          published: true,
+          type,
+          $or: [
+            { permanent_jilla: address },
+            { permanent_division: address },
+            { current_jilla: address },
+            { current_division: address }
+          ]
+        })
+        .select('type condition profession birth -_id')
         .populate('user', 'uId -_id')
-      res.status(200).json({ response: response ?? null })
-    } else if (jilla !== 'all' && type === 'all') {
-      // criteria JILLA
-      const response = await bio
-        .find({ permanent_jilla: jilla, published: true }, projections)
-        .populate('user', 'uId -_id')
-      res.status(200).json({ response: response ?? null })
-    } else if (type === 'all' && jilla === 'all') {
-      // no criteria
-      const response = await bio
-        .find({ published: true }, projections)
-        .populate('user', 'uId -_id')
-      res.status(200).json({ response: response ?? null })
-    } else {
-      // criteria both TYPE & JILLA
-      const response = await bio
-        .find({ type, permanent_jilla: jilla, published: true }, projections)
-        .populate('user', 'uId -_id')
-      res.status(200).json({ response: response ?? null })
+      return res.status(200).json({ response })
     }
+    const response = await bio
+      .find({ type, published: true })
+      .select('type condition profession birth -_id')
+      .populate('user', 'uId -_id')
+    return res.status(200).json({ response })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
   }
 }
 
 const filterBios = async (req, res) => {
+  const filteredCriteria = filterEmptyProperties(req.body)
+  const { condition, type, ageFrom, ageTo, education, madhab, jilla } =
+    filteredCriteria
+
+  const conditions = [
+    { type },
+    { published: true },
+    { age: { $gte: ageFrom, $lte: ageTo } }
+  ]
   try {
-    const response = await bio
-      .find({ ...req.body, published: true }, projections)
+    if (condition) {
+      conditions.push({ condition })
+    }
+    if (education) {
+      conditions.push({ education })
+    }
+    if (madhab) {
+      conditions.push({ madhab })
+    }
+    if (jilla) {
+      conditions.push({ permanent_jilla: jilla })
+    }
+    const bios = await bio
+      .find({ $and: conditions })
+      .select('type condition profession birth -_id')
       .populate('user', 'uId -_id')
 
-    res.status(200).json({ response })
+    res.status(200).json({ bios })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
   }
@@ -198,9 +217,13 @@ const filterBios = async (req, res) => {
 const getFeatureds = async (req, res) => {
   try {
     const response = await bio
-      .find({ featured: true, published: true }, projections)
+      .find(
+        { featured: true, published: true },
+        { type: 1, condition: 1, birth: 1, profession: 1, _id: 0 }
+      )
       .populate('user', 'uId -_id')
-    res.status(200).json({ bios: response ?? null })
+    // .select('type condition birth profession')
+    res.status(200).json({ bios: response })
   } catch (error) {
     res.status(404).json({ message: error.message, error })
   }
@@ -235,28 +258,15 @@ const checkField = async (req, res) => {
   }
 }
 
-// Biodata bookmarking handlers
-const getFavorites = async (req, res) => {
-  const id = req.id
-  try {
-    const data = await userModel
-      .findById(id)
-      .populate('bookmarks', 'type birth condition profession user -_id')
-
-    res.status(200).json({ bios: data.bookmarks })
-  } catch (error) {
-    res.status(404).json({ message: 'No bookmarks' })
-  }
-}
-
-// Get bookmarks by array of bio ids
-const getFavoritesFromIds = async (req, res) => {
+// Bookmark
+// Get bookmarks by array of bio uIds
+const getFavoritesFromuIds = async (req, res) => {
   const uIds = req.body.uIds
 
   try {
     const user = await userModel
-      .find({ uId: { $in: uIds }, published: true }, { bio: 1, _id: 0 })
-      .populate('bio', 'type condition birth profession user')
+      .find({ uId: { $in: uIds }, published: true }, { bio: 1, uId: 1, _id: 0 })
+      .populate('bio', 'type condition birth profession -_id')
     res.status(200).json({ response: user })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
@@ -315,7 +325,7 @@ const checkFavorite = async (req, res) => {
 // Info request options
 const makeRequest = async (req, res) => {
   try {
-    const response = await inforequest.create(req.body)
+    await inforequest.create(req.body)
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
@@ -330,13 +340,12 @@ module.exports = {
   getUIDbyId,
   getBioByToken,
   getSpecificData,
-  getBios,
+  initialFilter,
   filterBios,
   getFeatureds,
   hideBioByUser,
   checkField,
-  getFavorites,
-  getFavoritesFromIds,
+  getFavoritesFromuIds,
   addToFavorite,
   checkFavorite,
   removeFavorite,

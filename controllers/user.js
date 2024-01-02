@@ -10,20 +10,21 @@ const signup = async (req, res) => {
   const { phone, uId } = req.body
 
   try {
-    const hasNumber = await userModel.findOne({ phone })
+    const user = await userModel.findOne({ phone })
 
-    if (hasNumber) {
+    if (user) {
       // Signing in
       const token = getToken({
-        phone: hasNumber.phone,
-        uId: hasNumber.uId,
-        id: hasNumber._id
+        phone: user.phone,
+        uId: user.uId,
+        id: user._id
       })
       return res.status(200).json({
         message: 'Sign in successfully',
         token,
-        id: hasNumber._id,
-        uId: hasNumber.uId
+        id: user._id,
+        uId: user.uId,
+        bookmarks: user.bookmarks
       })
     } else {
       // Signing up
@@ -74,7 +75,7 @@ const getType = async (req, res) => {
 const requestDeleteHide = async (req, res) => {
   const user = req.id
   try {
-    const response = await deletehide.create({ ...req.body, user })
+    await deletehide.create({ ...req.body, user })
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(404).json({ error })

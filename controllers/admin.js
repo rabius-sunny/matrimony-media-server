@@ -33,7 +33,7 @@ const signinadmin = async (req, res) => {
 
 const signupadmin = async (req, res) => {
   try {
-    const response = await adminModel.create(req.body)
+    await adminModel.create(req.body)
     res.status(200).json({ message: 'Successfully created Admin' })
   } catch (error) {
     res.status(500).json({ error, message: 'Failed to created Admin' })
@@ -42,47 +42,23 @@ const signupadmin = async (req, res) => {
 
 // bio operations
 const getAllBio = async (req, res) => {
-  let bios = []
   try {
-    const response = await bioModel.find().populate('user', 'uId -_id')
-    response.forEach((bio) =>
-      bios.push({
-        name: bio.name,
-        condition: bio.condition,
-        date: bio.createdAt,
-        type: bio.type,
-        user: bio.user,
-        id: bio._id,
-        published: bio.published,
-        requested: bio.requested,
-        featured: bio.featured
-      })
-    )
-    return res.status(200).json({ message: 'ok', bios })
+    const response = await bioModel
+      .find()
+      .populate('user', 'uId -_id')
+      .select('name condition date type published requested featured createdAt')
+    return res.status(200).json({ message: 'ok', bios: response })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }
 }
 
 const getRequestedBio = async (req, res) => {
-  let bios = []
   try {
-    const response = await bioModel
+    const bios = await bioModel
       .find({ requested: true })
       .populate('user', 'uId -_id')
-    if (response) {
-      response.map((bio) =>
-        bios.push({
-          name: bio.name,
-          condition: bio.condition,
-          date: bio.createdAt,
-          type: bio.type,
-          user: bio.user,
-          id: bio._id,
-          published: bio.published
-        })
-      )
-    }
+      .select('name condition createdAt type published')
     return res.status(200).json({ message: 'ok', bios })
   } catch (error) {
     res.status(500).json({ error, message: error.message })

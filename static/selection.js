@@ -15,7 +15,7 @@ const selectionString = {
   expectation:
     'type published ex_year ex_complexion ex_height ex_education ex_jilla ex_marrital_condition ex_profession ex_financial_condition ex_family_condition ex_features',
   contact: 'type published guardian_number number_relation receiving_email',
-  card: 'type published condition permanent_address permanent_division current_address current_division birth complexion height weight blood profession'
+  card: 'type published condition permanent_jilla permanent_division current_jilla current_division birth complexion height weight blood profession'
 }
 
 const getSelection = (key) => selectionString[key]

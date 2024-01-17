@@ -1,12 +1,14 @@
 const jwt = require('jsonwebtoken')
 const sendMessage = require('../configs/sendMessage.js')
 const userModel = require('../models/user.js')
+const trashModel = require('../models/trash.js')
 const adminModel = require('../models/admin.js')
 const bio = require('../models/bio.js')
 const bioModel = require('../models/bio.js')
 const deletehide = require('../models/deletehide.js')
 const inforequest = require('../models/inforequest.js')
 const user = require('../models/user.js')
+const { errorMsg, successMsg } = require('../static/static-response.js')
 
 // Get a token from jsonwebtoken
 const getToken = (user) => jwt.sign(user, process.env.ADMIN_SECRET_KEY)
@@ -87,12 +89,12 @@ const publishBio = async (req, res) => {
 }
 
 // delete or hide
-const getDeleteHideReq = async (req, res) => {
+const getDeleteRequests = async (req, res) => {
   try {
-    const response = await deletehide.find().populate('user', 'uId username')
-    return res.status(200).json({ requests: response })
+    const data = await deletehide.find().populate('user', 'uId username')
+    return res.status(200).json(successMsg(data))
   } catch (error) {
-    return res.status(404).json({ message: 'Not found' })
+    return res.status(404).json(errorMsg(error, 'not found'))
   }
 }
 
@@ -109,10 +111,12 @@ const hideBio = async (req, res) => {
 }
 
 const deleteBio = async (req, res) => {
+  const { id, phone } = req.body
   try {
-    const deleteBio = await bioModel.findByIdAndDelete(req.params.id)
-    const deleteUser = await userModel.findOneAndDelete({ bio: req.params.id })
-    res.status(200).json({ message: 'ok' })
+    await trashModel.create({ phone })
+    // await bioModel.findByIdAndDelete(req.params.id)
+    // await userModel.findOneAndDelete({ bio: req.params.id })
+    res.status(200).json({ message: 'ok', response: { id, phone } })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
   }
@@ -192,6 +196,7 @@ const getInfoRequests = async (req, res) => {
     res.status(404).json({ message: 'Not found' })
   }
 }
+
 const getRequest = async (req, res) => {
   try {
     const response = await inforequest.find()
@@ -200,6 +205,7 @@ const getRequest = async (req, res) => {
     res.status(500).json({ error, message: error.message })
   }
 }
+
 const acceptRequest = async (req, res) => {
   const { to, id, target } = req.body
   try {
@@ -226,6 +232,7 @@ const acceptRequest = async (req, res) => {
     res.status(500).json({ error, message: error.message })
   }
 }
+
 const deleteRequest = async (req, res) => {
   try {
     const response = await inforequest.findByIdAndDelete(req.params.id)
@@ -242,7 +249,7 @@ module.exports = {
   getRequestedBio,
   getBioById,
   publishBio,
-  getDeleteHideReq,
+  getDeleteRequests,
   hideBio,
   deleteBio,
   hideBioById,

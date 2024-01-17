@@ -1,6 +1,6 @@
 const auth = require('../middlewares/auth.js')
 const {
-  requestDeleteHide,
+  requestDelete,
   getType,
   getUser,
   signup,
@@ -13,6 +13,6 @@ router.post('/sign-in', signup)
 router.get('/get-user', auth, getUser)
 router.get('/get-type', auth, getType)
 router.get('/get-uids', getUids)
-router.post('/delete-hide-request', auth, requestDeleteHide)
+router.post('/get-delete-request', auth, requestDelete)
 
 module.exports = router

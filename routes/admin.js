@@ -8,7 +8,7 @@ const {
   deleteRequest,
   getAllBio,
   getBioById,
-  getDeleteHideReq,
+  getDeleteRequests,
   getRequest,
   getRequestedBio,
   hideBio,
@@ -31,10 +31,10 @@ router.get('/bio/:id', adminAuth, getBioById)
 router.get('/edit-requests', adminAuth, getRequestedBio)
 
 // delete or hide
-router.get('/get-delete-hide', adminAuth, getDeleteHideReq)
+router.get('/get-delete-requests', adminAuth, getDeleteRequests)
 router.get('/hide-bio/:id', adminAuth, hideBio)
 router.get('/hide-bio-id/:id/:reqId', adminAuth, hideBioById)
-router.delete('/delete-bio/:id', adminAuth, deleteBio)
+router.post('/delete-bio', adminAuth, deleteBio)
 router.delete('/delete-bio-id/:id/:reqId', adminAuth, deleteBioById)
 router.get('/publish-bio/:id', adminAuth, publishBio)
 

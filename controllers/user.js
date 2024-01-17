@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const userModel = require('../models/user.js')
 const bioModel = require('../models/bio.js')
 const deletehide = require('../models/deletehide.js')
+const { successMsg, errorMsg } = require('../static/static-response.js')
 
 // Get a token from jsonwebtoken
 const getToken = (user) => jwt.sign(user, process.env.SECRET_KEY)
@@ -72,15 +73,18 @@ const getType = async (req, res) => {
     res.status(404).json({ error })
   }
 }
-const requestDeleteHide = async (req, res) => {
+
+const requestDelete = async (req, res) => {
+  const { reason } = req.body
   const user = req.id
   try {
-    await deletehide.create({ ...req.body, user })
-    res.status(200).json({ message: 'ok' })
+    await deletehide.create({ reason, user })
+    res.status(200).json(successMsg())
   } catch (error) {
-    res.status(404).json({ error })
+    res.status(500).json(errorMsg(error))
   }
 }
+
 const getUids = async (req, res) => {
   try {
     const response = await userModel.find()
@@ -95,6 +99,6 @@ module.exports = {
   signup,
   getUser,
   getType,
-  requestDeleteHide,
+  requestDelete,
   getUids
 }

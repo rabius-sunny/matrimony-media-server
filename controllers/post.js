@@ -13,6 +13,7 @@ const {
   getUnfilled
 } = require('../static/fields.js')
 const getGroupData = require('../utils/getGroupData.js')
+const { successMsg, errorMsg } = require('../static/static-response.js')
 
 // Biodata CRUD handlers
 
@@ -232,15 +233,16 @@ const getFeatureds = async (req, res) => {
 const hideBioByUser = async (req, res) => {
   const id = req.id
   try {
-    const response = await bio.findOneAndUpdate(
+    await bio.findOneAndUpdate(
       { user: id },
       {
+        featured: false,
         published: false
       }
     )
-    res.status(200).json({ message: 'ok' })
+    res.status(200).json(successMsg())
   } catch (error) {
-    res.status(500).json({ error, message: error.message })
+    res.status(500).json(errorMsg(error))
   }
 }
 

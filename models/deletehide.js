@@ -9,7 +9,7 @@ const deleteHideSchema = new Schema(
       type: String,
       required: true
     },
-    type: {
+    phone: {
       type: String,
       required: true
     }

@@ -1,7 +1,7 @@
-const successMsg = (data = null) => ({ ok: true, data })
-const errorMsg = (error, message = null) => ({
+const successRes = (data = null) => ({ ok: true, data })
+const errorRes = (error, message = null) => ({
   error,
   message: message ?? error.message
 })
 
-module.exports = { successMsg, errorMsg }
+module.exports = { successRes, errorRes }

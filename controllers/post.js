@@ -13,7 +13,7 @@ const {
   getUnfilled
 } = require('../static/fields.js')
 const getGroupData = require('../utils/getGroupData.js')
-const { successMsg, errorMsg } = require('../static/static-response.js')
+const { successRes, errorRes } = require('../static/static-response.js')
 
 // Biodata CRUD handlers
 
@@ -240,9 +240,9 @@ const hideBioByUser = async (req, res) => {
         published: false
       }
     )
-    res.status(200).json(successMsg())
+    res.status(200).json(successRes())
   } catch (error) {
-    res.status(500).json(errorMsg(error))
+    res.status(500).json(errorRes(error))
   }
 }
 
@@ -260,18 +260,19 @@ const checkField = async (req, res) => {
   }
 }
 
-// Bookmark
-// Get bookmarks by array of bio uIds
+// Favorites
+// Get favorites by array of bio uIds
 const getFavoritesFromuIds = async (req, res) => {
   const uIds = req.body.uIds
+  console.log('uids', uIds)
 
   try {
-    const user = await userModel
+    const data = await userModel
       .find({ uId: { $in: uIds }, published: true }, { bio: 1, uId: 1, _id: 0 })
       .populate('bio', 'type condition birth profession -_id')
-    res.status(200).json({ response: user })
+    res.status(200).json(successRes(data))
   } catch (error) {
-    res.status(404).json({ error, message: error.message })
+    res.status(404).json(errorRes(error))
   }
 }
 
@@ -280,14 +281,16 @@ const addToFavorite = async (req, res) => {
   const id = req.id
   try {
     if (!uId) {
-      return res.status(500).json({ message: 'no uId found' })
+      return res
+        .status(500)
+        .json(errorRes({ message: 'no uId found' }, 'no uId found'))
     }
     const user = await userModel.findById(id)
     user.bookmarks.push(uId)
     await user.save()
-    res.status(200).json({ message: 'ok' })
+    res.status(200).json(successRes())
   } catch (error) {
-    res.status(500).json({ message: 'Failed to bookmark' })
+    res.status(500).json(errorRes())
   }
 }
 
@@ -297,14 +300,16 @@ const removeFavorite = async (req, res) => {
 
   try {
     if (!uId) {
-      return res.status(500).json({ message: 'no uId found' })
+      return res
+        .status(500)
+        .json(errorRes({ message: 'no uId found' }, 'no uId found'))
     }
     const user = await userModel.findById(id)
     user.bookmarks.pull(uId)
     await user.save()
-    res.status(200).json({ message: 'ok' })
+    res.status(200).json(successRes())
   } catch (error) {
-    res.status(500).json({ error, message: error.message })
+    res.status(500).json(errorRes(error))
   }
 }
 

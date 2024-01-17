@@ -8,7 +8,7 @@ const bioModel = require('../models/bio.js')
 const deletehide = require('../models/deletehide.js')
 const inforequest = require('../models/inforequest.js')
 const user = require('../models/user.js')
-const { errorMsg, successMsg } = require('../static/static-response.js')
+const { errorRes, successRes } = require('../static/static-response.js')
 
 // Get a token from jsonwebtoken
 const getToken = (user) => jwt.sign(user, process.env.ADMIN_SECRET_KEY)
@@ -92,9 +92,9 @@ const publishBio = async (req, res) => {
 const getDeleteRequests = async (req, res) => {
   try {
     const data = await deletehide.find().populate('user', 'uId username')
-    return res.status(200).json(successMsg(data))
+    return res.status(200).json(successRes(data))
   } catch (error) {
-    return res.status(404).json(errorMsg(error, 'not found'))
+    return res.status(404).json(errorRes(error, 'not found'))
   }
 }
 

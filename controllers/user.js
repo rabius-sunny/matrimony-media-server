@@ -44,11 +44,12 @@ const signup = async (req, res) => {
         message: 'User created successfully',
         token,
         id: response._id,
-        uId: response.uId
+        uId: response.uId,
+        bookmarks: user.bookmarks
       })
     }
   } catch (error) {
-    res.status(500).json({ error })
+    res.status(500).json(errorRes(error))
   }
 }
 

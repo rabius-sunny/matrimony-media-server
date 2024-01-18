@@ -39,7 +39,7 @@ router.get('/get-featureds', getFeatureds)
 
 // Biodata bookmarking options
 router.post('/favorites', auth, getFavoritesFromuIds)
-router.get('/post-favorites/:uId', auth, addToFavorite)
+router.get('/add-favorites/:uId', auth, addToFavorite)
 router.get('/is-favorite/:uId', auth, checkFavorite)
 router.delete('/delete-favorites/:uId', auth, removeFavorite)
 

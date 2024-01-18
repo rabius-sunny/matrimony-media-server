@@ -17,6 +17,9 @@ const userSchema = new Schema(
     bookmarks: {
       type: [String]
     },
+    bookmarked: {
+      type: [String]
+    },
     fields: {
       primary: {
         type: Boolean,

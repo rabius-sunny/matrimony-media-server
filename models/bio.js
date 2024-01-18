@@ -6,12 +6,12 @@ const bioSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'user'
     },
-    bookmarks: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'user'
-      }
-    ],
+    // bookmarks: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'user'
+    //   }
+    // ],
     published: {
       type: Boolean,
       default: false

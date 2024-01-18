@@ -14,4 +14,15 @@ const projections = {
   featured: 0
 }
 
-module.exports = projections
+const getProjections = (escape = null) => {
+  const newProjections = { ...projections }
+
+  if (escape) {
+    escape.forEach((item) => {
+      delete newProjections[item]
+    })
+  }
+  return newProjections
+}
+
+module.exports = { projections, getProjections }

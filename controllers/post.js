@@ -1,7 +1,7 @@
 const bio = require('../models/bio.js')
 const inforequest = require('../models/inforequest.js')
 const userModel = require('../models/user.js')
-const projections = require('../static/projection.js')
+const { projections, getProjections } = require('../static/projection.js')
 const { getSelection } = require('../static/selection.js')
 const { filterEmptyProperties } = require('../utils/filterEmptyObject.js')
 const {
@@ -97,11 +97,16 @@ const getBioByUserId = async (req, res) => {
 const getBioByToken = async (req, res) => {
   const user = req.id
   try {
-    const data = await bio.findOne({ user }, projections)
+    const data = await bio.findOne({ user }, getProjections(['requested']))
     const userdata = await userModel.findById(user)
     const unfilled = getUnfilled(userdata.toObject())
     const biodata = getGroupData(data.toObject())
-    res.status(200).json({ bio: biodata, uId: userdata.uId, unfilled })
+    res.status(200).json({
+      bio: biodata,
+      uId: userdata.uId,
+      unfilled,
+      requested: data.requested ?? 'no data'
+    })
   } catch (error) {
     res.status(404).json({ error, message: error.message })
   }
@@ -111,7 +116,7 @@ const getBioByUID = async (req, res) => {
   const uId = req.params.uId
   try {
     const user = await userModel.findOne({ uId })
-    const data = await bio.findById(user.bio /* ,projections */)
+    const data = await bio.findById(user.bio)
     const biodata = getGroupData(data.toObject())
     res.status(200).json({ bio: biodata })
   } catch (error) {
@@ -264,7 +269,6 @@ const checkField = async (req, res) => {
 // Get favorites by array of bio uIds
 const getFavoritesFromuIds = async (req, res) => {
   const uIds = req.body.uIds
-  console.log('uids', uIds)
 
   try {
     const data = await userModel
@@ -279,15 +283,20 @@ const getFavoritesFromuIds = async (req, res) => {
 const addToFavorite = async (req, res) => {
   const uId = req.params.uId
   const id = req.id
+  const userId = req.uId
   try {
     if (!uId) {
       return res
         .status(500)
         .json(errorRes({ message: 'no uId found' }, 'no uId found'))
     }
-    const user = await userModel.findById(id)
-    user.bookmarks.push(uId)
-    await user.save()
+
+    await userModel.findByIdAndUpdate(id, { $addToSet: { bookmarks: uId } })
+    await userModel.findOneAndUpdate(
+      { uId },
+      { $addToSet: { bookmarked: userId } }
+    )
+
     res.status(200).json(successRes())
   } catch (error) {
     res.status(500).json(errorRes())
@@ -297,6 +306,7 @@ const addToFavorite = async (req, res) => {
 const removeFavorite = async (req, res) => {
   const uId = req.params.uId
   const id = req.id
+  const userId = req.uId
 
   try {
     if (!uId) {
@@ -304,9 +314,10 @@ const removeFavorite = async (req, res) => {
         .status(500)
         .json(errorRes({ message: 'no uId found' }, 'no uId found'))
     }
-    const user = await userModel.findById(id)
-    user.bookmarks.pull(uId)
-    await user.save()
+    await userModel.findByIdAndUpdate(id, { $pull: { bookmarks: uId } })
+    await userModel.findOneAndUpdate({ uId }, { $pull: { bookmarked: userId } })
+
+    res.status(200).json(successRes())
     res.status(200).json(successRes())
   } catch (error) {
     res.status(500).json(errorRes(error))
@@ -325,7 +336,7 @@ const checkFavorite = async (req, res) => {
       res.status(200).json({ message: 'Not exists' })
     }
   } catch (error) {
-    res.status(500).json({ error, message: error.message })
+    res.status(500).json(errorRes(error))
   }
 }
 

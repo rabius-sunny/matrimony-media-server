@@ -344,9 +344,9 @@ const checkFavorite = async (req, res) => {
 const makeRequest = async (req, res) => {
   try {
     await inforequest.create(req.body)
-    res.status(200).json({ message: 'ok' })
+    res.status(200).json(successRes())
   } catch (error) {
-    res.status(500).json({ error, message: error.message })
+    res.status(500).json(errorRes(error))
   }
 }
 

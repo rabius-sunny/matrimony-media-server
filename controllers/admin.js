@@ -7,7 +7,6 @@ const bio = require('../models/bio.js')
 const bioModel = require('../models/bio.js')
 const deletehide = require('../models/deletehide.js')
 const inforequest = require('../models/inforequest.js')
-const user = require('../models/user.js')
 const { errorRes, successRes } = require('../static/static-response.js')
 
 // Get a token from jsonwebtoken
@@ -78,10 +77,23 @@ const getBioById = async (req, res) => {
 
 const publishBio = async (req, res) => {
   try {
-    const response = await bioModel.findByIdAndUpdate(req.params.id, {
+    await bioModel.findByIdAndUpdate(req.params.id, {
       published: true,
       requested: false
     })
+    const bioUser = await userModel.findOne({ bio: req.params.id })
+    console.log('phone', bioUser.phone)
+    const text = `আসসালামু আলাইকুম, আপনার বায়োডাটাটি পাবলিশ করা হয়েছে। জাযাকাল্লাহু খাইরান।
+    jannatijuti.com`
+    await sendMessage.message
+      .sendSms({
+        to: `88${bioUser.phone}`,
+        text
+      })
+      .then((res) => console.log(res))
+      .catch((err) =>
+        res.status(500).json({ error: err, message: err.message })
+      )
     res.status(200).json({ message: 'ok' })
   } catch (error) {
     res.status(500).json({ error, message: error.message })
@@ -158,7 +170,7 @@ const makeFeature = async (req, res) => {
     const response = await bio.findByIdAndUpdate(req.params.id, {
       featured: true
     })
-    const userfromid = await user.findOne({ bio: req.params.id })
+    const userfromid = await userModel.findOne({ bio: req.params.id })
     const phone = userfromid.phone
     const text = `আসসালামু আলাইকুম, আপনার বায়োডাটাটি ফিচার করা হয়েছে। জাযাকাল্লাহু খাইরান।
     jannatijuti.com`
@@ -212,6 +224,7 @@ const acceptRequest = async (req, res) => {
     const info = await userModel
       .findOne({ uId: target })
       .populate('bio', 'guardian_number receiving_email -_id')
+
     const text = `আসসালামু আলাইকুম, আপনার আকাঙ্ক্ষিত বায়োডাটা ${target} এর অভিভাবকের নম্বর : ${info.bio.guardian_number}. বায়োডাটা গ্রহণের ইমেইল এ্যাড্রেস : ${info.bio.receiving_email}.
     জাযাকাল্লাহু খাইর।`
 

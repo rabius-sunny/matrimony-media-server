@@ -22,7 +22,7 @@ connection()
 
 // Routes
 app.get('/', (req, res) => res.send('Route is working!'))
-app.get('/checking', (req, res) => res.send('Check is successfull!'))
+app.get('/check', (req, res) => res.send('Check is successfull!'))
 app.use('/', PostRouter)
 app.use('/', userRouter)
 app.use('/', othersRoute)

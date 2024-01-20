@@ -318,7 +318,6 @@ const removeFavorite = async (req, res) => {
     await userModel.findOneAndUpdate({ uId }, { $pull: { bookmarked: userId } })
 
     res.status(200).json(successRes())
-    res.status(200).json(successRes())
   } catch (error) {
     res.status(500).json(errorRes(error))
   }
